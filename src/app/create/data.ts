@@ -1,0 +1,92 @@
+import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
+
+export const ConditionData: {
+  84532: {
+    platform: {
+      id: number;
+      name: string;
+    }[];
+    platformAddress: {
+      0: {
+        id: number;
+        name: string;
+        value: string;
+      }[];
+    };
+    parameterType: {
+      0: {
+        id: number;
+        name: string;
+      }[];
+    };
+  };
+  11155111: {
+    platform: {
+      id: number;
+      name: string;
+    }[];
+  };
+  43113: {
+    platform: {
+      id: number;
+      name: string;
+    }[];
+  };
+} = {
+  [baseSepolia.id]: {
+    platform: [
+      { id: 0, name: "Chainlink" },
+      { id: 1, name: "Aave Overall Portfolio" },
+      { id: 2, name: "Aave Collateral Position" },
+      { id: 3, name: "Aave Debt Position" },
+      { id: 4, name: "Morpho Vault Position" },
+    ],
+    platformAddress: {
+      // Chainlink Price Feeds
+      0: [
+        {
+          id: 0,
+          name: "Bitcoin USD Price Feed",
+          value: "0x0FB99723Aee6f420beAD13e6bBB79b7E6F034298",
+        },
+        {
+          id: 1,
+          name: "ETH USD Price Feed",
+          value: "0x4aDC67696bA383F43DD60A9e78F2C97Fbbfc7cb1",
+        },
+        {
+          id: 2,
+          name: "DAI USD Price Feed",
+          value: "0xD1092a65338d049DB68D7Be6bD89d17a0929945e",
+        },
+        {
+          id: 3,
+          name: "LINK USD Price Feed",
+          value: "0xb113F5A928BCfF189C998ab20d753a47F9dE5A61",
+        },
+      ],
+    },
+    parameterType: {
+      0: [
+        { id: 0, name: "Greater than current Price" },
+        { id: 1, name: "Lesser than or equal to current Price" },
+      ],
+    },
+  },
+  [sepolia.id]: {
+    platform: [
+      { id: 0, name: "Chainlink" },
+      { id: 1, name: "Aave Overall Portfolio" },
+      { id: 2, name: "Aave Collateral Position" },
+      { id: 3, name: "Aave Debt Position" },
+    ],
+  },
+  [avalancheFuji.id]: {
+    platform: [
+      { id: 0, name: "Chainlink" },
+      { id: 1, name: "Aave Overall Portfolio" },
+      { id: 2, name: "Aave Collateral Position" },
+      { id: 3, name: "Aave Debt Position" },
+    ],
+  },
+};
