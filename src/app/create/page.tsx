@@ -1,9 +1,11 @@
 "use client";
 import { useState, ChangeEvent } from "react";
 
-import { ConditionOrderDetails } from "./dataTypes";
+import { ConditionOrderDetails, DepositOrderDetails } from "./dataTypes";
 import Navbar from "../components/nav/Navbar";
 import { ConditionSection } from "./components/condition/ConditionSection";
+import { DepositSection } from "./components/deposit/DepositSection";
+
 export default function Page() {
   const [conditionObject, setConditionObject] = useState<ConditionOrderDetails>(
     {
@@ -16,6 +18,16 @@ export default function Page() {
       tipTokenAmount: "",
     },
   );
+
+  const [depositObject, setDepositObject] = useState<DepositOrderDetails>({
+    chainId: 0,
+    depositTokenAddress: "",
+    depositTokenType: 0,
+    convertTokenAddress: "",
+    tokenAmount: "",
+    depositPlatform: 0,
+    repay: 0,
+  });
 
   const updateConditionObjectWithSelector = (
     e: ChangeEvent<HTMLSelectElement>,
@@ -37,6 +49,58 @@ export default function Page() {
       [name]: value,
     }));
   };
+
+  const updateDepositObjectWithSelector = (
+    e: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    console.log("deposit selector", name, value);
+
+    setDepositObject((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const updateDepositObjectWithInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    console.log("deposit input", name, value);
+
+    setDepositObject((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  function createOrder() {
+    console.log("Creating ORder");
+  }
+
+  function resetOrder() {
+    console.log("Reset Order");
+
+    setConditionObject({
+      chainId: 0,
+      platform: -1,
+      platformAddress: "",
+      parameter: -1,
+      conditionValue: "",
+      tipTokenAddress: "",
+      tipTokenAmount: "",
+    });
+
+    setDepositObject({
+      chainId: 0,
+      depositTokenAddress: "",
+      depositTokenType: 0,
+      convertTokenAddress: "",
+      tokenAmount: "",
+      depositPlatform: 0,
+      repay: 0,
+    });
+  }
 
   return (
     <>
@@ -169,22 +233,24 @@ export default function Page() {
               </div>
               {/* End First Content */}
 
-              {/* First Content */}
+              {/* Second Content */}
               <div
                 data-hs-stepper-content-item='{
               "index": 2
             }'
                 style={{ display: "none" }}
               >
-                <div className="p-4 h-max bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-700 dark:border-neutral-600">
-                  <h3 className="text-gray-500 dark:text-neutral-400">
-                    Second content
-                  </h3>
-                </div>
+                <DepositSection
+                  depositObject={depositObject}
+                  updateDepositObjectWithInput={updateDepositObjectWithInput}
+                  updateDepositObjectWithSelector={
+                    updateDepositObjectWithSelector
+                  }
+                />
               </div>
-              {/* End First Content */}
+              {/* End Second Content */}
 
-              {/* First Content */}
+              {/* Third Content */}
               <div
                 data-hs-stepper-content-item='{
               "index": 3
@@ -263,6 +329,7 @@ export default function Page() {
                   className="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   data-hs-stepper-finish-btn=""
                   style={{ display: "none" }}
+                  onClick={createOrder}
                 >
                   Finish
                 </button>
@@ -271,6 +338,7 @@ export default function Page() {
                   className="py-2 px-3 inline-flex items-center gap-x-1 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                   data-hs-stepper-reset-btn=""
                   style={{ display: "none" }}
+                  onClick={resetOrder}
                 >
                   Reset
                 </button>

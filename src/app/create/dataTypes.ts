@@ -29,3 +29,19 @@ export type ConditionFormSelectorProps = {
     e: ChangeEvent<HTMLSelectElement>,
   ) => void;
 };
+
+export type DepositOrderDetails = {
+  chainId: number;
+  depositTokenAddress: string;
+  depositTokenType: number;
+  convertTokenAddress: string;
+  tokenAmount: string;
+  depositPlatform: number;
+  repay: number;
+};
+
+export type DepositFormProps = {
+  depositObject: DepositOrderDetails;
+  updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
+};
