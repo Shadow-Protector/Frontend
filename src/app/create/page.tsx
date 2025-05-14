@@ -41,7 +41,7 @@ export default function Page() {
   return (
     <>
       <Navbar />
-      <div className="md:container md:mx-auto m-40">
+      <div className="md:container md:mx-auto m-20">
         <div className="p-4 bg-white rounded-lg shadow-md dark:bg-neutral-800">
           {/* Stepper */}
           <div data-hs-stepper="">
