@@ -45,3 +45,8 @@ export type DepositFormProps = {
   updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
   updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
 };
+
+export type DepositFormSelectorProps = {
+  depositObject: DepositOrderDetails;
+  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
+};

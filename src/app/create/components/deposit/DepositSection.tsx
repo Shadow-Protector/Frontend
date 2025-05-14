@@ -1,5 +1,8 @@
+import { Checkbox, Field, Label } from "@headlessui/react";
+import { useState } from "react";
+
 import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
-import { DepositFormProps } from "../../dataTypes";
+import { DepositFormProps, DepositFormSelectorProps } from "../../dataTypes";
 
 export function DepositSection({
   depositObject,
@@ -22,8 +25,162 @@ export function DepositSection({
             <option value={sepolia.id}>Arbitrum</option>
             <option value={avalancheFuji.id}>Avalanche</option>
           </select>
+          <DepositTokenComponent
+            depositObject={depositObject}
+            updateDepositObjectWithInput={updateDepositObjectWithInput}
+            updateDepositObjectWithSelector={updateDepositObjectWithSelector}
+          />
+          <SwapComponent
+            depositObject={depositObject}
+            updateDepositObjectWithSelector={updateDepositObjectWithSelector}
+          />
         </div>
       </div>
+    </>
+  );
+}
+
+function DepositTokenComponent({
+  depositObject,
+  updateDepositObjectWithInput,
+  updateDepositObjectWithSelector,
+}: DepositFormProps) {
+  if (depositObject.chainId != 0) {
+    return (
+      <>
+        Select Deposit Token Address: {depositObject.depositTokenAddress}
+        <select
+          name="depositTokenAddress"
+          className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+          onChange={updateDepositObjectWithSelector}
+        >
+          <option value={""}>Select Token</option>
+          <option value={"asda"}>USDC</option>
+        </select>
+        <br />
+        <div className="max-w-sm space-y-3">
+          <div>
+            <label
+              htmlFor="tokenAmount"
+              className="block text-sm font-medium mb-2 dark:text-white"
+            >
+              Enter Value: {depositObject.tokenAmount}
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="hs-input-with-leading-and-trailing-icon"
+                name="tokenAmount"
+                className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                placeholder="0.00"
+                onChange={updateDepositObjectWithInput}
+              />
+              <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
+                <span className="text-gray-500 dark:text-neutral-500">$</span>
+              </div>
+              <div className="absolute inset-y-0 end-0 flex items-center pointer-events-none z-20 pe-4">
+                <span className="text-gray-500 dark:text-neutral-500">USD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return;
+}
+
+function SwapComponent({
+  depositObject,
+  updateDepositObjectWithSelector,
+}: DepositFormSelectorProps) {
+  const [enabled, setEnabled] = useState(false);
+  if (depositObject.depositTokenAddress != "") {
+    if (enabled) {
+      return (
+        <>
+          <br />
+          <div>
+            <Field className="flex items-center gap-2">
+              <Checkbox
+                checked={enabled}
+                onChange={setEnabled}
+                className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
+              >
+                <svg
+                  className="stroke-white opacity-0 group-data-checked:opacity-100"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                >
+                  <path
+                    d="M3 8L6 11L11 3.5"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Checkbox>
+              <Label>Swap Token</Label>
+            </Field>
+          </div>
+          <br />
+          <SwapSelector
+            depositObject={depositObject}
+            updateDepositObjectWithSelector={updateDepositObjectWithSelector}
+          />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <br />
+          <div>
+            <Field className="flex items-center gap-2">
+              <Checkbox
+                checked={enabled}
+                onChange={setEnabled}
+                className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
+              >
+                <svg
+                  className="stroke-white opacity-0 group-data-checked:opacity-100"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                >
+                  <path
+                    d="M3 8L6 11L11 3.5"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </Checkbox>
+              <Label>Swap Token</Label>
+            </Field>
+          </div>
+          <br />
+        </>
+      );
+    }
+  }
+  return;
+}
+
+function SwapSelector({
+  depositObject,
+  updateDepositObjectWithSelector,
+}: DepositFormSelectorProps) {
+  return (
+    <>
+      Select Swap Output Token: {depositObject.convertTokenAddress}
+      <select
+        name="convertTokenAddress"
+        className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+        onChange={updateDepositObjectWithSelector}
+      >
+        <option value={""}>Select Token</option>
+        <option value={"asda"}>USDC</option>
+      </select>
     </>
   );
 }
