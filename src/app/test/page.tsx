@@ -90,3 +90,6 @@
 //     </>
 //   );
 // }
+export default function test() {
+  return "Test Page";
+}
