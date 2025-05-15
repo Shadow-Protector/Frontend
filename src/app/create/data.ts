@@ -132,7 +132,7 @@ export const ContractData = {
 
 export const chainConfiguration = [
   {
-    id: "-1",
+    id: "0",
     name: "Select Chain",
     avatar: "/vercel.svg",
   },
