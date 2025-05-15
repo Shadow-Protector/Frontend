@@ -34,6 +34,8 @@ export function ConditionSection({
       updateConditionObject("vaultAddress", vaultAddress);
     }
   }
+  
+  async function updateListBox
 
   return (
     <>
