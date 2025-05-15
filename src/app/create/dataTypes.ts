@@ -13,10 +13,6 @@ export type ConditionOrderDetails = {
 
 export type ConditionProps = {
   conditionObject: ConditionOrderDetails;
-  updateConditionObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateConditionObjectWithSelector: (
-    e: ChangeEvent<HTMLSelectElement>,
-  ) => void;
   updateConditionObject: (
     key: keyof ConditionOrderDetails,
     value: string | number,

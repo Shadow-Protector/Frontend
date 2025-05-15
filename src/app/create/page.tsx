@@ -249,12 +249,6 @@ export default function Page() {
               >
                 <ConditionSection
                   conditionObject={conditionObject}
-                  updateConditionObjectWithInput={
-                    updateConditionObjectWithInput
-                  }
-                  updateConditionObjectWithSelector={
-                    updateConditionObjectWithSelector
-                  }
                   updateConditionObject={updateConditionObject}
                 />
               </div>

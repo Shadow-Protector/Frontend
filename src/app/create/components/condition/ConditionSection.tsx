@@ -4,17 +4,11 @@ import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
 import { useSwitchChain, useAccount } from "wagmi";
 import { getVaultAddress, deployVault } from "../utils";
 
-import {
-  ConditionFormProps,
-  ConditionFormSelectorProps,
-  ConditionProps,
-} from "../../dataTypes";
+import { ConditionProps } from "../../dataTypes";
 import { ConditionData } from "../../data";
 
 export function ConditionSection({
   conditionObject,
-  updateConditionObjectWithInput,
-  updateConditionObjectWithSelector,
   updateConditionObject,
 }: ConditionProps) {
   const { switchChain } = useSwitchChain();
@@ -61,29 +55,19 @@ export function ConditionSection({
           </select>
           <ConditionPlatform
             conditionObject={conditionObject}
-            updateConditionObjectWithSelector={
-              updateConditionObjectWithSelector
-            }
+            updateConditionObject={updateConditionObject}
           />
           <ConditionPlatformAddress
             conditionObject={conditionObject}
-            updateConditionObjectWithSelector={
-              updateConditionObjectWithSelector
-            }
+            updateConditionObject={updateConditionObject}
           />
           <ConditionParamterType
             conditionObject={conditionObject}
-            updateConditionObjectWithSelector={
-              updateConditionObjectWithSelector
-            }
-            updateConditionObjectWithInput={updateConditionObjectWithInput}
+            updateConditionObject={updateConditionObject}
           />
           <TipComponent
             conditionObject={conditionObject}
-            updateConditionObjectWithSelector={
-              updateConditionObjectWithSelector
-            }
-            updateConditionObjectWithInput={updateConditionObjectWithInput}
+            updateConditionObject={updateConditionObject}
           />
         </div>
       </div>
@@ -93,10 +77,17 @@ export function ConditionSection({
 
 function ConditionPlatform({
   conditionObject,
-  updateConditionObjectWithSelector,
-}: ConditionFormSelectorProps) {
+  updateConditionObject,
+}: ConditionProps) {
+  async function updateConditionPlatform(e: ChangeEvent<HTMLSelectElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    updateConditionObject("platform", value);
+  }
+
   if (conditionObject.chainId != 0) {
-    let array = ConditionData[conditionObject.chainId].platform;
+    const array = ConditionData[conditionObject.chainId.toString()].platform;
     if (array == undefined) {
       return;
     }
@@ -112,7 +103,7 @@ function ConditionPlatform({
         <select
           name="platform"
           className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-          onChange={updateConditionObjectWithSelector}
+          onChange={updateConditionPlatform}
         >
           <option value={-1}>Select Platform</option>
           {listItem}
@@ -126,13 +117,21 @@ function ConditionPlatform({
 
 function ConditionPlatformAddress({
   conditionObject,
-  updateConditionObjectWithSelector,
-}: ConditionFormSelectorProps) {
+  updateConditionObject,
+}: ConditionProps) {
+  async function updateConditionPlatformAddress(
+    e: ChangeEvent<HTMLSelectElement>,
+  ) {
+    const { name, value } = e.target;
+    console.log(name, value);
+    updateConditionObject("platformAddress", value);
+  }
+
   console.log("Condition Platform", conditionObject.platform);
   if (conditionObject.platform >= 0) {
-    let array =
-      ConditionData[conditionObject.chainId].platformAddress[
-        conditionObject.platform
+    const array =
+      ConditionData[conditionObject.chainId.toString()].platformAddress[
+        conditionObject.platform.toString()
       ];
 
     if (array == undefined) {
@@ -153,7 +152,7 @@ function ConditionPlatformAddress({
         <select
           name="platformAddress"
           className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-          onChange={updateConditionObjectWithSelector}
+          onChange={updateConditionPlatformAddress}
         >
           <option>Select Platform</option>
           {listItem}
@@ -168,9 +167,22 @@ function ConditionPlatformAddress({
 
 function ConditionParamterType({
   conditionObject,
-  updateConditionObjectWithInput,
-  updateConditionObjectWithSelector,
-}: ConditionFormProps) {
+  updateConditionObject,
+}: ConditionProps) {
+  async function updateConditionParameter(e: ChangeEvent<HTMLSelectElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    updateConditionObject("parameter", value);
+  }
+
+  async function updateConditionValue(e: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    updateConditionObject("conditionValue", value);
+  }
+
   if (conditionObject.platform >= 0 && conditionObject.platformAddress != "") {
     console.log(
       "",
@@ -201,7 +213,7 @@ function ConditionParamterType({
         <select
           name="parameter"
           className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-          onChange={updateConditionObjectWithSelector}
+          onChange={updateConditionParameter}
         >
           <option value={-1}>Select Condition</option>
           {listItem}
@@ -222,7 +234,7 @@ function ConditionParamterType({
                 name="conditionValue"
                 className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 placeholder="0.00"
-                onChange={updateConditionObjectWithInput}
+                onChange={updateConditionValue}
               />
               <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
                 <span className="text-gray-500 dark:text-neutral-500">$</span>
@@ -241,16 +253,29 @@ function ConditionParamterType({
 
 function TipComponent({
   conditionObject,
-  updateConditionObjectWithInput,
-  updateConditionObjectWithSelector,
-}: ConditionFormProps) {
+  updateConditionObject,
+}: ConditionProps) {
+  async function updateTipTokenAddress(e: ChangeEvent<HTMLSelectElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    updateConditionObject("tipTokenAddress", value);
+  }
+
+  async function updateTipTokenAmount(e: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+
+    updateConditionObject("tipTokenAmount", value);
+  }
+
   return (
     <>
       Select Tip Token Address: {conditionObject.tipTokenAddress}
       <select
         name="tipTokenAddress"
         className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-        onChange={updateConditionObjectWithSelector}
+        onChange={updateTipTokenAddress}
       >
         <option value={""}>Select Token</option>
         <option value={"asda"}>USDC</option>
@@ -271,7 +296,7 @@ function TipComponent({
               name="tipTokenAmount"
               className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
               placeholder="0.00"
-              onChange={updateConditionObjectWithInput}
+              onChange={updateTipTokenAmount}
             />
             <div className="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4">
               <span className="text-gray-500 dark:text-neutral-500">$</span>

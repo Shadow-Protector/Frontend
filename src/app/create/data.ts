@@ -1,39 +1,7 @@
 import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
 
-export const ConditionData: {
-  84532: {
-    platform: {
-      id: number;
-      name: string;
-    }[];
-    platformAddress: {
-      0: {
-        id: number;
-        name: string;
-        value: string;
-      }[];
-    };
-    parameterType: {
-      0: {
-        id: number;
-        name: string;
-      }[];
-    };
-  };
-  11155111: {
-    platform: {
-      id: number;
-      name: string;
-    }[];
-  };
-  43113: {
-    platform: {
-      id: number;
-      name: string;
-    }[];
-  };
-} = {
-  [baseSepolia.id]: {
+export const ConditionData = {
+  [baseSepolia.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink" },
       { id: 1, name: "Aave Overall Portfolio" },
@@ -43,7 +11,7 @@ export const ConditionData: {
     ],
     platformAddress: {
       // Chainlink Price Feeds
-      0: [
+      "0": [
         {
           id: 0,
           name: "Bitcoin USD Price Feed",
@@ -73,7 +41,7 @@ export const ConditionData: {
       ],
     },
   },
-  [sepolia.id]: {
+  [sepolia.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink" },
       { id: 1, name: "Aave Overall Portfolio" },
@@ -81,7 +49,7 @@ export const ConditionData: {
       { id: 3, name: "Aave Debt Position" },
     ],
   },
-  [avalancheFuji.id]: {
+  [avalancheFuji.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink" },
       { id: 1, name: "Aave Overall Portfolio" },
