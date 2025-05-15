@@ -10,7 +10,7 @@ export function FinalSection({
     const array: {
       id: number;
       name: string;
-    }[] = FinalSectionData[chainId].PlatformSelection;
+    }[] = FinalSectionData[chainId.toString()].PlatformSelection;
     if (array == undefined) {
       return;
     }

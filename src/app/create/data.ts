@@ -91,15 +91,8 @@ export const ConditionData: {
   },
 };
 
-export const FinalSectionData: {
-  84532: {
-    PlatformSelection: {
-      id: number;
-      name: string;
-    }[];
-  };
-} = {
-  [baseSepolia.id]: {
+export const FinalSectionData = {
+  [baseSepolia.id.toString()]: {
     PlatformSelection: [
       {
         id: 0,
