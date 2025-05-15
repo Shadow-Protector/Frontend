@@ -1,9 +1,13 @@
-// import { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 
 import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
+import { useSwitchChain, useAccount } from "wagmi";
+import { getVaultAddress, deployVault } from "../utils";
+
 import {
   ConditionFormProps,
   ConditionFormSelectorProps,
+  ConditionProps,
 } from "../../dataTypes";
 import { ConditionData } from "../../data";
 
@@ -11,7 +15,32 @@ export function ConditionSection({
   conditionObject,
   updateConditionObjectWithInput,
   updateConditionObjectWithSelector,
-}: ConditionFormProps) {
+  updateConditionObject,
+}: ConditionProps) {
+  const { switchChain } = useSwitchChain();
+  const { address } = useAccount();
+
+  async function updateChainId(e: ChangeEvent<HTMLSelectElement>) {
+    const { name, value } = e.target;
+    console.log(name, value);
+    switchChain({ chainId: Number(value) });
+
+    if (address) {
+      let vaultAddress = await getVaultAddress(value, address);
+      console.log("User Vault", vaultAddress);
+      if (vaultAddress == "0x0000000000000000000000000000000000000000") {
+        console.log("Need to deploy vault");
+        await deployVault(value);
+
+        vaultAddress = await getVaultAddress(value, address);
+        console.log("New User Vault", vaultAddress);
+      }
+
+      updateConditionObject("chainId", value);
+      updateConditionObject("vaultAddress", vaultAddress);
+    }
+  }
+
   return (
     <>
       <div className="p-4 h-max bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-700 dark:border-neutral-600">
@@ -23,11 +52,11 @@ export function ConditionSection({
           <select
             name="chainId"
             className="py-5 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-            onChange={updateConditionObjectWithSelector}
+            onChange={updateChainId}
           >
             <option value={0}>Select Chain</option>
             <option value={baseSepolia.id}>Base</option>
-            <option value={sepolia.id}>Arbitrum</option>
+            <option value={sepolia.id}>Eth Sepolia</option>
             <option value={avalancheFuji.id}>Avalanche</option>
           </select>
           <ConditionPlatform

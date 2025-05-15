@@ -5,11 +5,12 @@ import { ConditionOrderDetails, DepositOrderDetails } from "./dataTypes";
 import Navbar from "../components/nav/Navbar";
 import { ConditionSection } from "./components/condition/ConditionSection";
 import { DepositSection } from "./components/deposit/DepositSection";
-
+import { FinalSection } from "./components/final/FinalSection";
 export default function Page() {
   const [conditionObject, setConditionObject] = useState<ConditionOrderDetails>(
     {
       chainId: 0,
+      vaultAddress: "",
       platform: -1,
       platformAddress: "",
       parameter: -1,
@@ -21,13 +22,35 @@ export default function Page() {
 
   const [depositObject, setDepositObject] = useState<DepositOrderDetails>({
     chainId: 0,
+    vaultAddress: "",
     depositTokenAddress: "",
     depositTokenType: 0,
     convertTokenAddress: "",
     tokenAmount: "",
     depositPlatform: 0,
+    depositPlatformAddress: "",
     repay: 0,
   });
+
+  const updateConditionObject = (
+    key: keyof ConditionOrderDetails,
+    value: string | number,
+  ) => {
+    setConditionObject((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const updateDepositObject = (
+    key: keyof DepositOrderDetails,
+    value: string | number,
+  ) => {
+    setDepositObject((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   const updateConditionObjectWithSelector = (
     e: ChangeEvent<HTMLSelectElement>,
@@ -83,6 +106,7 @@ export default function Page() {
 
     setConditionObject({
       chainId: 0,
+      vaultAddress: "",
       platform: -1,
       platformAddress: "",
       parameter: -1,
@@ -93,11 +117,13 @@ export default function Page() {
 
     setDepositObject({
       chainId: 0,
+      vaultAddress: "",
       depositTokenAddress: "",
       depositTokenType: 0,
       convertTokenAddress: "",
       tokenAmount: "",
       depositPlatform: 0,
+      depositPlatformAddress: "",
       repay: 0,
     });
   }
@@ -229,6 +255,7 @@ export default function Page() {
                   updateConditionObjectWithSelector={
                     updateConditionObjectWithSelector
                   }
+                  updateConditionObject={updateConditionObject}
                 />
               </div>
               {/* End First Content */}
@@ -257,11 +284,13 @@ export default function Page() {
             }'
                 style={{ display: "none" }}
               >
-                <div className="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-700 dark:border-neutral-600">
-                  <h3 className="text-gray-500 dark:text-neutral-400">
-                    Third content
-                  </h3>
-                </div>
+                <FinalSection
+                  chainId={conditionObject.chainId}
+                  depositObject={depositObject}
+                  updateDepositObjectWithSelector={
+                    updateDepositObjectWithSelector
+                  }
+                />
               </div>
               {/* End First Content */}
 
@@ -331,7 +360,7 @@ export default function Page() {
                   style={{ display: "none" }}
                   onClick={createOrder}
                 >
-                  Finish
+                  Create Order
                 </button>
                 <button
                   type="reset"

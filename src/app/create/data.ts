@@ -1,4 +1,4 @@
-import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
+import { baseSepolia, sepolia, avalancheFuji, adf } from "wagmi/chains";
 
 export const ConditionData: {
   84532: {
@@ -88,5 +88,43 @@ export const ConditionData: {
       { id: 2, name: "Aave Collateral Position" },
       { id: 3, name: "Aave Debt Position" },
     ],
+  },
+};
+
+export const FinalSectionData: {
+  84532: {
+    PlatformSelection: {
+      id: number;
+      name: string;
+    }[];
+  };
+} = {
+  [baseSepolia.id]: {
+    PlatformSelection: [
+      {
+        id: 0,
+        name: "Self-Transfer",
+      },
+      {
+        id: 1,
+        name: "Aave Protocol",
+      },
+      {
+        id: 2,
+        name: "Morpho Vaults",
+      },
+      {
+        id: 3,
+        name: "Morpho Borrow Position",
+      },
+    ],
+  },
+};
+
+export const ContractData = {
+  [baseSepolia.id.toString()]: {
+    handler: "0x297dC29284778d3FbB33ef14076aF8927bAB5222",
+    factory: "0xDD51Ac91a5a4D78a83295b1c61288a05c6ebb937",
+    deployer: "0x4CcFd0F469E27110b30C0FDAc35Dd32cd57F131D",
   },
 };

@@ -2,12 +2,25 @@ import { ChangeEvent } from "react";
 
 export type ConditionOrderDetails = {
   chainId: number;
+  vaultAddress: string;
   platform: number;
   platformAddress: string;
   parameter: number;
   conditionValue: string;
   tipTokenAddress: string;
   tipTokenAmount: string;
+};
+
+export type ConditionProps = {
+  conditionObject: ConditionOrderDetails;
+  updateConditionObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateConditionObjectWithSelector: (
+    e: ChangeEvent<HTMLSelectElement>,
+  ) => void;
+  updateConditionObject: (
+    key: keyof ConditionOrderDetails,
+    value: string | number,
+  ) => void;
 };
 
 export type ConditionFormProps = {
@@ -32,11 +45,13 @@ export type ConditionFormSelectorProps = {
 
 export type DepositOrderDetails = {
   chainId: number;
+  vaultAddress: string;
   depositTokenAddress: string;
   depositTokenType: number;
   convertTokenAddress: string;
   tokenAmount: string;
   depositPlatform: number;
+  depositPlatformAddress: string;
   repay: number;
 };
 
@@ -47,6 +62,12 @@ export type DepositFormProps = {
 };
 
 export type DepositFormSelectorProps = {
+  depositObject: DepositOrderDetails;
+  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
+};
+
+export type FinalSectionProps = {
+  chainId: number;
   depositObject: DepositOrderDetails;
   updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
 };
