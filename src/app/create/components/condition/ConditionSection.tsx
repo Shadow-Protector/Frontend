@@ -15,6 +15,8 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 import { ConditionProps } from "../../dataTypes";
 import { ConditionData, chainConfiguration } from "../../data";
 
+import { ChainlinkSection } from "./ChainlinkSection";
+
 export function ConditionSection({
   conditionObject,
   updateConditionObject,
@@ -43,8 +45,10 @@ export function ConditionSection({
         console.log("New User Vault", vaultAddress);
       }
       setSelected(chain);
-      updateConditionObject("chainId", chain.id);
-      updateConditionObject("vaultAddress", vaultAddress);
+      if (vaultAddress) {
+        updateConditionObject("chainId", chain.id);
+        updateConditionObject("vaultAddress", vaultAddress);
+      }
     }
   }
 
@@ -118,10 +122,10 @@ export function ConditionSection({
             conditionObject={conditionObject}
             updateConditionObject={updateConditionObject}
           />
-          <ConditionParamterType
+          {/* <ConditionParamterType
             conditionObject={conditionObject}
             updateConditionObject={updateConditionObject}
-          />
+          /> */}
           <br />
           <TipComponent
             conditionObject={conditionObject}
@@ -137,11 +141,21 @@ function ConditionPlatform({
   conditionObject,
   updateConditionObject,
 }: ConditionProps) {
-  async function updateConditionPlatform(e: ChangeEvent<HTMLSelectElement>) {
-    const { name, value } = e.target;
-    console.log(name, value);
+  const [selected, setSelected] = useState({
+    id: 0,
+    name: "Select Platform",
+    avatar: "/vercel.svg",
+  });
 
-    updateConditionObject("platform", value);
+  async function updateConditionPlatform(platform: {
+    id: number;
+    name: string;
+    avatar: string;
+  }) {
+    console.log(platform);
+
+    updateConditionObject("platform", platform.id);
+    setSelected(platform);
   }
 
   if (conditionObject.chainId != 0) {
@@ -149,24 +163,63 @@ function ConditionPlatform({
     if (array == undefined) {
       return;
     }
-    const listItem = array.map((object) => (
-      <option key={object.id} value={object.id}>
-        {object.name}
-      </option>
-    ));
     return (
       <>
         <br />
-        Select Condition Platform:
-        {conditionObject.platform >= 0 ? conditionObject.platform : ""}
-        <select
-          name="platform"
-          className="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-          onChange={updateConditionPlatform}
-        >
-          <option value={-1}>Select Platform</option>
-          {listItem}
-        </select>
+        <Listbox value={selected} onChange={updateConditionPlatform}>
+          <Label className="block text-sm/6 font-medium text-gray-900">
+            Select Condition Platform: {selected.name}-
+            {conditionObject.platform >= 0 ? conditionObject.platform : ""}
+          </Label>
+          <div className="relative mt-2">
+            <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+              <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+                <Image
+                  width={400}
+                  height={400}
+                  alt=""
+                  src={selected.avatar}
+                  className="size-5 shrink-0 rounded-full"
+                />
+                <span className="block truncate">{selected.name}</span>
+              </span>
+              <ChevronUpDownIcon
+                aria-hidden="true"
+                className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+              />
+            </ListboxButton>
+
+            <ListboxOptions
+              transition
+              className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm"
+            >
+              {array.map((chain) => (
+                <ListboxOption
+                  key={chain.id}
+                  value={chain}
+                  className="group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden"
+                >
+                  <div className="flex items-center">
+                    <Image
+                      width={400}
+                      height={400}
+                      alt=""
+                      src={chain.avatar}
+                      className="size-5 shrink-0 rounded-full"
+                    />
+                    <span className="ml-3 block truncate font-normal group-data-selected:font-semibold">
+                      {chain.name}
+                    </span>
+                  </div>
+
+                  <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-not-data-selected:hidden group-data-focus:text-white">
+                    <CheckIcon aria-hidden="true" className="size-5" />
+                  </span>
+                </ListboxOption>
+              ))}
+            </ListboxOptions>
+          </div>
+        </Listbox>
         <br />
       </>
     );
@@ -178,6 +231,26 @@ function ConditionPlatformAddress({
   conditionObject,
   updateConditionObject,
 }: ConditionProps) {
+  // Chainlink (0)
+  // Aave Overall Portfolio (1)
+  // Aave Collateral Position (2)
+  // Aave Debt Position (3)
+  // Morpho Vault Position (4)
+
+  // Chainlink
+  if (conditionObject.platform == 0) {
+    return (
+      <ChainlinkSection
+        conditionObject={conditionObject}
+        updateConditionObject={updateConditionObject}
+      />
+    );
+  } else if (conditionObject.platform == 1) {
+  } else if (conditionObject.platform == 2) {
+  } else if (conditionObject.platform == 3) {
+  } else if (conditionObject.platform == 4) {
+  }
+
   async function updateConditionPlatformAddress(
     e: ChangeEvent<HTMLSelectElement>,
   ) {
@@ -350,7 +423,7 @@ function TipComponent({
           </label>
           <div className="relative">
             <input
-              type="text"
+              type="number"
               id="hs-input-with-leading-and-trailing-icon"
               name="tipTokenAmount"
               className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"

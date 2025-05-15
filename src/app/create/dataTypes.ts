@@ -19,6 +19,15 @@ export type ConditionProps = {
   ) => void;
 };
 
+export type ChainlinkFinalSectionProps = {
+  conditionObject: ConditionOrderDetails;
+  updateConditionObject: (
+    key: keyof ConditionOrderDetails,
+    value: string | number,
+  ) => void;
+  price: bigint;
+};
+
 export type ConditionFormProps = {
   conditionObject: ConditionOrderDetails;
   updateConditionObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;

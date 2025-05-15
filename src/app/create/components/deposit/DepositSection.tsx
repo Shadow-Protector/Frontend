@@ -35,9 +35,10 @@ export function DepositSection({
         vaultAddress = await getVaultAddress(value, address);
         console.log("New User Vault", vaultAddress);
       }
-
-      updateDepositObject("chainId", value);
-      updateDepositObject("vaultAddress", vaultAddress);
+      if (vaultAddress) {
+        updateDepositObject("chainId", value);
+        updateDepositObject("vaultAddress", vaultAddress);
+      }
     }
   }
 
