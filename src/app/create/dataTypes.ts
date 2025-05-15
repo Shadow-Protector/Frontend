@@ -55,6 +55,16 @@ export type DepositOrderDetails = {
   repay: number;
 };
 
+export type DepositOrderProps = {
+  depositObject: DepositOrderDetails;
+  updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
+  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
+  updateDepositObject: (
+    key: keyof DepositOrderDetails,
+    value: string | number,
+  ) => void;
+};
+
 export type DepositFormProps = {
   depositObject: DepositOrderDetails;
   updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;

@@ -273,6 +273,7 @@ export default function Page() {
                   updateDepositObjectWithSelector={
                     updateDepositObjectWithSelector
                   }
+                  updateDepositObject={updateDepositObject}
                 />
               </div>
               {/* End Second Content */}

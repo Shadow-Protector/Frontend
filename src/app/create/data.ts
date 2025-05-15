@@ -1,4 +1,4 @@
-import { baseSepolia, sepolia, avalancheFuji, adf } from "wagmi/chains";
+import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
 
 export const ConditionData: {
   84532: {
