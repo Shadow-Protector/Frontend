@@ -77,7 +77,10 @@ export default function Page() {
   };
 
   function createOrder() {
-    console.log("Creating ORder");
+    console.log("Creating Order");
+
+    console.log("Condition", conditionObject);
+    console.log("Deposit Object", depositObject);
   }
 
   function resetOrder() {

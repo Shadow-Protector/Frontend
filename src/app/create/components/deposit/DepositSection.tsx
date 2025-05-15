@@ -151,7 +151,9 @@ function DepositTokenComponent({
           onChange={updateDepositObjectWithSelector}
         >
           <option value={""}>Select Token</option>
-          <option value={"asda"}>USDC</option>
+          <option value={"0x036cbd53842c5426634e7929541ec2318f3dcf7e"}>
+            USDC
+          </option>
         </select>
         <br />
         <div className="max-w-sm space-y-3">
@@ -275,7 +277,9 @@ function SwapSelector({
         onChange={updateDepositObjectWithSelector}
       >
         <option value={""}>Select Token</option>
-        <option value={"asda"}>USDC</option>
+        <option value={"0x036cbd53842c5426634e7929541ec2318f3dcf7e"}>
+          USDC
+        </option>
       </select>
     </>
   );

@@ -16,6 +16,10 @@ import { ConditionProps } from "../../dataTypes";
 import { ConditionData, chainConfiguration } from "../../data";
 
 import { ChainlinkSection } from "./ChainlinkSection";
+import { AavePortfolioSection } from "./AavePortfolioSection";
+import { AaveCollateralSection } from "./AaveCollateralSection";
+import { AaveDebtSection } from "./AaveDebtSection";
+import { MorphoVaultSection } from "./MorphoVaultSection";
 
 export function ConditionSection({
   conditionObject,
@@ -237,6 +241,7 @@ function ConditionPlatformAddress({
   // Aave Debt Position (3)
   // Morpho Vault Position (4)
 
+  console.log("Rendering external", conditionObject.platform);
   // Chainlink
   if (conditionObject.platform == 0) {
     return (
@@ -246,9 +251,33 @@ function ConditionPlatformAddress({
       />
     );
   } else if (conditionObject.platform == 1) {
+    return (
+      <AavePortfolioSection
+        conditionObject={conditionObject}
+        updateConditionObject={updateConditionObject}
+      />
+    );
   } else if (conditionObject.platform == 2) {
+    return (
+      <AaveCollateralSection
+        conditionObject={conditionObject}
+        updateConditionObject={updateConditionObject}
+      />
+    );
   } else if (conditionObject.platform == 3) {
+    return (
+      <AaveDebtSection
+        conditionObject={conditionObject}
+        updateConditionObject={updateConditionObject}
+      />
+    );
   } else if (conditionObject.platform == 4) {
+    return (
+      <MorphoVaultSection
+        conditionObject={conditionObject}
+        updateConditionObject={updateConditionObject}
+      />
+    );
   }
 
   // async function updateConditionPlatformAddress(
@@ -410,7 +439,9 @@ function TipComponent({
         onChange={updateTipTokenAddress}
       >
         <option value={""}>Select Token</option>
-        <option value={"asda"}>USDC</option>
+        <option value={"0x036cbd53842c5426634e7929541ec2318f3dcf7e"}>
+          USDC
+        </option>
       </select>
       <br />
       <div className="max-w-sm space-y-3">
