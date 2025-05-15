@@ -1,12 +1,17 @@
 "use client";
 import { useState, ChangeEvent } from "react";
 
+import { useAccount } from "wagmi";
+
 import { ConditionOrderDetails, DepositOrderDetails } from "./dataTypes";
 import Navbar from "../components/nav/Navbar";
 import { ConditionSection } from "./components/condition/ConditionSection";
 import { DepositSection } from "./components/deposit/DepositSection";
 import { FinalSection } from "./components/final/FinalSection";
+
+import { createOrderTransaction } from "./components/utils";
 export default function Page() {
+  const { address } = useAccount();
   const [conditionObject, setConditionObject] = useState<ConditionOrderDetails>(
     {
       chainId: 0,
@@ -76,11 +81,14 @@ export default function Page() {
     }));
   };
 
-  function createOrder() {
+  async function createOrder() {
     console.log("Creating Order");
 
     console.log("Condition", conditionObject);
     console.log("Deposit Object", depositObject);
+    if (address) {
+      await createOrderTransaction(address, conditionObject, depositObject);
+    }
   }
 
   function resetOrder() {

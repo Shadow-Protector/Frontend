@@ -241,7 +241,6 @@ function ConditionPlatformAddress({
   // Aave Debt Position (3)
   // Morpho Vault Position (4)
 
-  console.log("Rendering external", conditionObject.platform);
   // Chainlink
   if (conditionObject.platform == 0) {
     return (

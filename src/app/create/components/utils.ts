@@ -1,11 +1,17 @@
-import { readContract, writeContract } from "wagmi/actions";
+import { readContract, writeContract, switchChain } from "wagmi/actions";
+import { writeContracts } from "@wagmi/core/experimental";
 import { ContractData } from "../data";
 import { config } from "@/app/wagmi";
 
+import { chainlinkABI } from "@/app/abi/chainlink";
+import { tokenABI } from "@/app/abi/token";
 import { deployerABI } from "@/app/abi/deployer";
 import { factoryABI } from "@/app/abi/factory";
+import { vaultABI } from "@/app/abi/vault";
+
 // import { handlerABI } from "@/app/abi/handler";
-import { chainlinkABI } from "@/app/abi/chainlink";
+import { ConditionOrderDetails, DepositOrderDetails } from "../dataTypes";
+import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
 export async function getVaultAddress(chainId: string, address: string) {
   try {
     const factoryAddress: string = ContractData[chainId].factory;
@@ -79,4 +85,95 @@ export async function deployVault(chainId: string) {
   } catch (e) {
     console.log(e);
   }
+}
+
+export async function createOrderTransaction(
+  address: string,
+  conditionObject: ConditionOrderDetails,
+  depositObject: DepositOrderDetails,
+) {
+  try {
+    // Creating Order
+    console.log("Creating Order");
+    console.log(conditionObject.chainId, baseSepolia.id);
+    if (
+      conditionObject.chainId == baseSepolia.id ||
+      conditionObject.chainId == avalancheFuji.id ||
+      conditionObject.chainId == sepolia.id
+    ) {
+      // await switchChain(config, { chainId: conditionObject.chainId });
+      // await writeContract(config, {
+      //   abi: tokenABI,
+      //   address: conditionObject.tipTokenAddress as `0x${string}`,
+      //   functionName: "approve",
+      //   args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
+      // });
+      // await writeContract(config, {
+      //   abi: vaultABI,
+      //   address: conditionObject.vaultAddress as `0x${string}`,
+      //   functionName: "createOrder",
+      //   args: [
+      //     conditionObject.platform,
+      //     conditionObject.platformAddress as `0x${string}`,
+      //     conditionObject.parameter,
+      //     baseSepolia.id,
+      //     0,
+      //     BigInt(Number(conditionObject.conditionValue)),
+      //     conditionObject.tipTokenAddress as `0x${string}`,
+      //     BigInt(100),
+      //   ],
+      // });
+
+      const salt = getRandomIntInclusive(0, 10000);
+
+      await writeContracts(config, {
+        contracts: [
+          {
+            address: conditionObject.tipTokenAddress as `0x${string}`,
+            abi: tokenABI,
+            functionName: "approve",
+            args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
+          },
+          {
+            abi: vaultABI,
+            address: conditionObject.vaultAddress as `0x${string}`,
+            functionName: "createOrder",
+            args: [
+              conditionObject.platform,
+              conditionObject.platformAddress as `0x${string}`,
+              conditionObject.parameter,
+              baseSepolia.id,
+              salt,
+              BigInt(Number(conditionObject.conditionValue)),
+              conditionObject.tipTokenAddress as `0x${string}`,
+              BigInt(100),
+            ],
+          },
+        ],
+      });
+
+      console.log("Order Creation Done");
+
+      const orderId = await readContract(config, {
+        abi: vaultABI,
+        address: conditionObject.vaultAddress as `0x${string}`,
+        functionName: "generateKey",
+        args: [
+          conditionObject.platform,
+          conditionObject.platformAddress as `0x${string}`,
+          conditionObject.parameter,
+          baseSepolia.id,
+          salt,
+        ],
+      });
+
+      console.log("OrderId:", orderId);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+function getRandomIntInclusive(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
