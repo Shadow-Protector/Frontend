@@ -89,3 +89,26 @@ export const ContractData = {
     deployer: "0x4CcFd0F469E27110b30C0FDAc35Dd32cd57F131D",
   },
 };
+
+export const chainConfiguration = [
+  {
+    id: "-1",
+    name: "Select Chain",
+    avatar: "/vercel.svg",
+  },
+  {
+    id: sepolia.id.toString(),
+    name: "Arbitrum",
+    avatar: "/arbitrum.jpeg",
+  },
+  {
+    id: avalancheFuji.id.toString(),
+    name: "Avalanche",
+    avatar: "/Avalanche.jpeg",
+  },
+  {
+    id: baseSepolia.id.toString(),
+    name: "Base",
+    avatar: "/base.jpeg",
+  },
+];

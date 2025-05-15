@@ -1,41 +1,52 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
+import Image from "next/image";
 
-import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
 import { useSwitchChain, useAccount } from "wagmi";
 import { getVaultAddress, deployVault } from "../utils";
-
+import {
+  Label,
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/react";
+import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
+import { CheckIcon } from "@heroicons/react/20/solid";
 import { ConditionProps } from "../../dataTypes";
-import { ConditionData } from "../../data";
+import { ConditionData, chainConfiguration } from "../../data";
 
 export function ConditionSection({
   conditionObject,
   updateConditionObject,
 }: ConditionProps) {
+  const [selected, setSelected] = useState(chainConfiguration[0]);
+
   const { switchChain } = useSwitchChain();
   const { address } = useAccount();
 
-  async function updateChainId(e: ChangeEvent<HTMLSelectElement>) {
-    const { name, value } = e.target;
-    console.log(name, value);
-    switchChain({ chainId: Number(value) });
+  async function updateChainId(chain: {
+    id: string;
+    name: string;
+    avatar: string;
+  }) {
+    console.log(chain);
+    switchChain({ chainId: Number(chain.id) });
 
     if (address) {
-      let vaultAddress = await getVaultAddress(value, address);
+      let vaultAddress = await getVaultAddress(chain.id, address);
       console.log("User Vault", vaultAddress);
       if (vaultAddress == "0x0000000000000000000000000000000000000000") {
         console.log("Need to deploy vault");
-        await deployVault(value);
+        await deployVault(chain.id);
 
-        vaultAddress = await getVaultAddress(value, address);
+        vaultAddress = await getVaultAddress(chain.id, address);
         console.log("New User Vault", vaultAddress);
       }
-
-      updateConditionObject("chainId", value);
+      setSelected(chain);
+      updateConditionObject("chainId", chain.id);
       updateConditionObject("vaultAddress", vaultAddress);
     }
   }
-  
-  async function updateListBox
 
   return (
     <>
@@ -44,17 +55,61 @@ export function ConditionSection({
           <h4 className="text-gray-500 dark:text-neutral-400">
             Create Order Condition
           </h4>
-          Select Chain: {conditionObject.chainId}
-          <select
-            name="chainId"
-            className="py-5 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-            onChange={updateChainId}
-          >
-            <option value={0}>Select Chain</option>
-            <option value={baseSepolia.id}>Base</option>
-            <option value={sepolia.id}>Eth Sepolia</option>
-            <option value={avalancheFuji.id}>Avalanche</option>
-          </select>
+          <div>
+            <Listbox value={selected} onChange={updateChainId}>
+              <Label className="block text-sm/6 font-medium text-gray-900">
+                Chain Selected: {selected.name}-{conditionObject.chainId}
+              </Label>
+              <div className="relative mt-2">
+                <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                  <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+                    <Image
+                      width={400}
+                      height={400}
+                      alt=""
+                      src={selected.avatar}
+                      className="size-5 shrink-0 rounded-full"
+                    />
+                    <span className="block truncate">{selected.name}</span>
+                  </span>
+                  <ChevronUpDownIcon
+                    aria-hidden="true"
+                    className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                  />
+                </ListboxButton>
+
+                <ListboxOptions
+                  transition
+                  className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm"
+                >
+                  {chainConfiguration.map((chain) => (
+                    <ListboxOption
+                      key={chain.id}
+                      value={chain}
+                      className="group relative cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden"
+                    >
+                      <div className="flex items-center">
+                        <Image
+                          width={400}
+                          height={400}
+                          alt=""
+                          src={chain.avatar}
+                          className="size-5 shrink-0 rounded-full"
+                        />
+                        <span className="ml-3 block truncate font-normal group-data-selected:font-semibold">
+                          {chain.name}
+                        </span>
+                      </div>
+
+                      <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-not-data-selected:hidden group-data-focus:text-white">
+                        <CheckIcon aria-hidden="true" className="size-5" />
+                      </span>
+                    </ListboxOption>
+                  ))}
+                </ListboxOptions>
+              </div>
+            </Listbox>
+          </div>
           <ConditionPlatform
             conditionObject={conditionObject}
             updateConditionObject={updateConditionObject}
@@ -67,6 +122,7 @@ export function ConditionSection({
             conditionObject={conditionObject}
             updateConditionObject={updateConditionObject}
           />
+          <br />
           <TipComponent
             conditionObject={conditionObject}
             updateConditionObject={updateConditionObject}
@@ -100,6 +156,7 @@ function ConditionPlatform({
     ));
     return (
       <>
+        <br />
         Select Condition Platform:
         {conditionObject.platform >= 0 ? conditionObject.platform : ""}
         <select

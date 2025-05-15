@@ -52,27 +52,6 @@ export default function Page() {
     }));
   };
 
-  const updateConditionObjectWithSelector = (
-    e: ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    console.log("selector", name, value);
-    setConditionObject((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const updateConditionObjectWithInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    console.log("input", name, value);
-    setConditionObject((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const updateDepositObjectWithSelector = (
     e: ChangeEvent<HTMLSelectElement>,
   ) => {
