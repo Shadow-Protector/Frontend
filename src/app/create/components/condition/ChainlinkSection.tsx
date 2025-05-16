@@ -188,7 +188,7 @@ function ChainlinkFinalSelection({
                 id="hs-bordered-success-style-label"
                 className="text-gray-800 font-semibold dark:text-white"
               >
-                Asset Price : ${price / BigInt(100)}
+                Asset Price : ${Number(price) / 100}
               </h3>
               <p className="text-sm text-gray-700 dark:text-neutral-400">
                 Price Successfully Fetched.

@@ -12,18 +12,20 @@ import { vaultABI } from "@/app/abi/vault";
 // import { handlerABI } from "@/app/abi/handler";
 import { ConditionOrderDetails, DepositOrderDetails } from "../dataTypes";
 import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
+
 export async function getVaultAddress(chainId: string, address: string) {
   try {
-    const factoryAddress: string = ContractData[chainId].factory;
-    console.log("Factory", factoryAddress);
+    return "0x49ccd9ca821EfEab2b98c60dC60F518E765EDe9a";
+    // const factoryAddress: string = ContractData[chainId].factory;
+    // console.log("Factory", factoryAddress);
 
-    const result = await readContract(config, {
-      abi: factoryABI,
-      address: factoryAddress as `0x${string}`,
-      functionName: "getVault",
-      args: [address as `0x${string}`],
-    });
-    return result;
+    // const result = await readContract(config, {
+    //   abi: factoryABI,
+    //   address: factoryAddress as `0x${string}`,
+    //   functionName: "getVault",
+    //   args: [address as `0x${string}`],
+    // });
+    // return result;
   } catch (e) {
     console.log(e);
   }

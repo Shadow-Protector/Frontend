@@ -151,7 +151,7 @@ function DepositTokenComponent({
   const [selected, setSelected] = useState({
     name: "Select Tip Token",
     symbol: "STP",
-    thumbnail: "/vercel.svg",
+    thumbnail: "/coin.png",
     token_address: "0x",
   });
 
@@ -164,7 +164,7 @@ function DepositTokenComponent({
     setSelected({
       name: token.name ? token.name : "",
       symbol: token.symbol ? token.symbol : "",
-      thumbnail: token.thumbnail ? token.thumbnail : "/vercel.svg",
+      thumbnail: token.thumbnail ? token.thumbnail : "/coin.png",
       token_address: token.token_address ? token.token_address : "0x",
     });
   }
@@ -216,7 +216,7 @@ function DepositTokenComponent({
                       width={400}
                       height={400}
                       alt=""
-                      src={token.thumbnail ? token.thumbnail : "/vercel.svg"}
+                      src={token.thumbnail ? token.thumbnail : "/coin.png"}
                       className="size-5 shrink-0 rounded-full"
                     />
                     <span className="ml-3 block truncate font-normal group-data-selected:font-semibold">
