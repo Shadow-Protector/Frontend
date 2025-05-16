@@ -1,7 +1,7 @@
-import { baseSepolia, sepolia, avalancheFuji } from "wagmi/chains";
+import { base, arbitrum, avalanche } from "wagmi/chains";
 
 export const ConditionData = {
-  [baseSepolia.id.toString()]: {
+  [base.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink", avatar: "/chainlink.jpeg" },
       { id: 1, name: "Aave Overall Portfolio", avatar: "/aave.jpeg" },
@@ -51,7 +51,7 @@ export const ConditionData = {
       ["1"]: [],
     },
   },
-  [sepolia.id.toString()]: {
+  [arbitrum.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink", avatar: "/chainlink.jpeg" },
       { id: 1, name: "Aave Overall Portfolio", avatar: "/aave.jpeg" },
@@ -68,7 +68,7 @@ export const ConditionData = {
       ["1"]: [],
     },
   },
-  [avalancheFuji.id.toString()]: {
+  [avalanche.id.toString()]: {
     platform: [
       { id: 0, name: "Chainlink", avatar: "/chainlink.jpeg" },
       { id: 1, name: "Aave Overall Portfolio", avatar: "/aave.jpeg" },
@@ -100,7 +100,7 @@ export const ConditionData = {
 };
 
 export const FinalSectionData = {
-  [baseSepolia.id.toString()]: {
+  [base.id.toString()]: {
     PlatformSelection: [
       {
         id: 0,
@@ -124,10 +124,48 @@ export const FinalSectionData = {
       },
     ],
   },
+  [arbitrum.id.toString()]: {
+    PlatformSelection: [
+      {
+        id: 0,
+        name: "Self-Transfer",
+        avatar: "/vercel.svg",
+      },
+      {
+        id: 1,
+        name: "Aave Protocol",
+        avatar: "/aave.jpeg",
+      },
+    ],
+  },
+  [avalanche.id.toString()]: {
+    PlatformSelection: [
+      {
+        id: 0,
+        name: "Self-Transfer",
+        avatar: "/vercel.svg",
+      },
+      {
+        id: 1,
+        name: "Aave Protocol",
+        avatar: "/aave.jpeg",
+      },
+    ],
+  },
 };
 
 export const ContractData = {
-  [baseSepolia.id.toString()]: {
+  [base.id.toString()]: {
+    handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
+    factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
+    deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+  },
+  [arbitrum.id.toString()]: {
+    handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
+    factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
+    deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+  },
+  [avalanche.id.toString()]: {
     handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
     factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
     deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
@@ -141,17 +179,17 @@ export const chainConfiguration = [
     avatar: "/vercel.svg",
   },
   {
-    id: sepolia.id.toString(),
+    id: arbitrum.id.toString(),
     name: "Arbitrum",
     avatar: "/arbitrum.jpeg",
   },
   {
-    id: avalancheFuji.id.toString(),
+    id: avalanche.id.toString(),
     name: "Avalanche",
     avatar: "/Avalanche.jpeg",
   },
   {
-    id: baseSepolia.id.toString(),
+    id: base.id.toString(),
     name: "Base",
     avatar: "/base.jpeg",
   },
