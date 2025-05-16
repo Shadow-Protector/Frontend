@@ -1,3 +1,4 @@
+"use client";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { base, arbitrum, avalanche } from "wagmi/chains";

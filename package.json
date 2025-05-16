@@ -24,7 +24,7 @@
     "react-dom": "^19.0.0",
     "vanilla-calendar-pro": "^3.0.4",
     "viem": "^2.29.2",
-    "wagmi": "^2.15.3"
+    "wagmi": "2.14.15"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

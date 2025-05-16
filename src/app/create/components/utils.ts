@@ -11,22 +11,21 @@ import { factoryABI } from "@/app/abi/factory";
 import { vaultABI } from "@/app/abi/vault";
 
 // import { handlerABI } from "@/app/abi/handler";
-import { ConditionOrderDetails, DepositOrderDetails } from "../dataTypes";
-import { avalancheFuji, baseSepolia, sepolia } from "viem/chains";
+import { ConditionOrderDetails } from "../dataTypes";
+import { base, arbitrum, avalanche } from "viem/chains";
 
 export async function getVaultAddress(chainId: string, address: string) {
   try {
-    return "0x49ccd9ca821EfEab2b98c60dC60F518E765EDe9a";
-    // const factoryAddress: string = ContractData[chainId].factory;
-    // console.log("Factory", factoryAddress);
+    const factoryAddress: string = ContractData[chainId].factory;
+    console.log("Factory", factoryAddress);
 
-    // const result = await readContract(config, {
-    //   abi: factoryABI,
-    //   address: factoryAddress as `0x${string}`,
-    //   functionName: "getVault",
-    //   args: [address as `0x${string}`],
-    // });
-    // return result;
+    const result = await readContract(config, {
+      abi: factoryABI,
+      address: factoryAddress as `0x${string}`,
+      functionName: "getVault",
+      args: [address as `0x${string}`],
+    });
+    return result;
   } catch (e) {
     console.log(e);
   }
@@ -37,16 +36,6 @@ export async function getChainlinkPriceData(
   priceFeed: string,
 ) {
   try {
-    // const handlerAddress: string = ContractData[chainId].factory;
-    // console.log("Handler", handlerAddress);
-
-    // const result = await readContract(config, {
-    //   abi: handlerABI,
-    //   address: handlerAddress as `0x${string}`,
-    //   functionName: "getChainlinkData",
-    //   args: [priceFeed as `0x${string}`],
-    // });
-
     const priceFeedData = await readContract(config, {
       abi: chainlinkABI,
       address: priceFeed as `0x${string}`,
@@ -81,12 +70,19 @@ export async function getAavePortfolioData(chainId: string, address: string) {
 
     console.log("lendingPoolAddress", lendingPoolAddress);
 
-    const portfolioData = await readContract(config, {
+    const portfolioData = (await readContract(config, {
       abi: lendingPoolABI,
       address: lendingPoolAddress as `0x${string}`,
       functionName: "getUserAccountData",
       args: [address as `0x${string}`],
-    });
+    })) as [
+      bigint, // totalCollateral
+      bigint, // totalDebt
+      bigint, // availableBorrows
+      bigint, // liquidationThreshold
+      bigint, // ltv
+      bigint, // healthFactor
+    ];
     return {
       totalCollateral: Number(portfolioData[0]) / 10 ** 8,
       totalDebt: Number(portfolioData[1]) / 10 ** 8,
@@ -128,34 +124,34 @@ export async function createOrderTransaction(
   try {
     // Creating Order
     console.log("Creating Order");
-    console.log(conditionObject.chainId, baseSepolia.id);
+    console.log(conditionObject.chainId, base.id);
     if (
-      conditionObject.chainId == baseSepolia.id ||
-      conditionObject.chainId == avalancheFuji.id ||
-      conditionObject.chainId == sepolia.id
+      conditionObject.chainId == base.id ||
+      conditionObject.chainId == avalanche.id ||
+      conditionObject.chainId == arbitrum.id
     ) {
-      // await switchChain(config, { chainId: conditionObject.chainId });
-      // await writeContract(config, {
-      //   abi: tokenABI,
-      //   address: conditionObject.tipTokenAddress as `0x${string}`,
-      //   functionName: "approve",
-      //   args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
-      // });
-      // await writeContract(config, {
-      //   abi: vaultABI,
-      //   address: conditionObject.vaultAddress as `0x${string}`,
-      //   functionName: "createOrder",
-      //   args: [
-      //     conditionObject.platform,
-      //     conditionObject.platformAddress as `0x${string}`,
-      //     conditionObject.parameter,
-      //     baseSepolia.id,
-      //     0,
-      //     BigInt(Number(conditionObject.conditionValue)),
-      //     conditionObject.tipTokenAddress as `0x${string}`,
-      //     BigInt(100),
-      //   ],
-      // });
+      await switchChain(config, { chainId: conditionObject.chainId });
+      await writeContract(config, {
+        abi: tokenABI,
+        address: conditionObject.tipTokenAddress as `0x${string}`,
+        functionName: "approve",
+        args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
+      });
+      await writeContract(config, {
+        abi: vaultABI,
+        address: conditionObject.vaultAddress as `0x${string}`,
+        functionName: "createOrder",
+        args: [
+          conditionObject.platform,
+          conditionObject.platformAddress as `0x${string}`,
+          conditionObject.parameter,
+          base.id,
+          0,
+          BigInt(Number(conditionObject.conditionValue)),
+          conditionObject.tipTokenAddress as `0x${string}`,
+          BigInt(100),
+        ],
+      });
 
       const salt = getRandomIntInclusive(0, 10000);
 
@@ -175,7 +171,7 @@ export async function createOrderTransaction(
               conditionObject.platform,
               conditionObject.platformAddress as `0x${string}`,
               conditionObject.parameter,
-              baseSepolia.id,
+              base.id,
               salt,
               BigInt(Number(conditionObject.conditionValue)),
               conditionObject.tipTokenAddress as `0x${string}`,
@@ -195,7 +191,7 @@ export async function createOrderTransaction(
           conditionObject.platform,
           conditionObject.platformAddress as `0x${string}`,
           conditionObject.parameter,
-          baseSepolia.id,
+          base.id,
           salt,
         ],
       });

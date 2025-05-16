@@ -1,5 +1,11 @@
 import { ChangeEvent } from "react";
 
+export type ListBoxPattern = {
+  id: number;
+  name: string;
+  avatar: string;
+};
+
 export type ConditionOrderDetails = {
   chainId: number;
   vaultAddress: string;

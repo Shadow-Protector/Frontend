@@ -268,9 +268,9 @@ export const FinalSectionData = {
 
 export const ContractData = {
   [base.id.toString()]: {
-    handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
-    factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
-    deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+    handler: "0xdE8bb0fbcA6deE981c607C54f94bdd34A9D15362",
+    factory: "0xEc9A1021cC0d4619ac6405a648239bEB0bFCf76C",
+    deployer: "0xbF7d635B1F6fed745d9414a414F1f8B372C0bd79",
     aavePool: "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
   },
   [arbitrum.id.toString()]: {

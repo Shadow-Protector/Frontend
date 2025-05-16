@@ -25,26 +25,28 @@ export function FinalSection({
     avatar: "/vercel.svg",
   });
 
-  function updateDepositPlatform(platformValue: {
+  const updateDepositPlatform = (platformValue: {
     id: number;
     name: string;
     avatar: string;
-  }) {
+  }) => {
     console.log(platformValue);
     // setSelected(platformValue);
-  }
+  };
 
+  console.log(selected);
   if (chainId != 0) {
-    const array: {
+    const listData: {
       id: number;
       name: string;
       avatar: string;
     }[] = FinalSectionData[chainId.toString()].PlatformSelection;
-    if (array == undefined) {
+    if (listData == undefined) {
       return;
     }
     return (
       <>
+        {console.log(listData)}
         <div className="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-700 dark:border-neutral-600">
           <div className="columns-1">
             Select Deposit Platform on: {chainId} with{" "}
@@ -76,7 +78,7 @@ export function FinalSection({
                   transition
                   className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm"
                 >
-                  {array.map((item) => (
+                  {listData.map((item) => (
                     <ListboxOption
                       key={item.id}
                       value={item}
