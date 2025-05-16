@@ -90,7 +90,6 @@ export async function deployVault(chainId: string) {
 export async function createOrderTransaction(
   address: string,
   conditionObject: ConditionOrderDetails,
-  depositObject: DepositOrderDetails,
 ) {
   try {
     // Creating Order

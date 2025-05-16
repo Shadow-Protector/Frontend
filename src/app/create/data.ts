@@ -105,18 +105,22 @@ export const FinalSectionData = {
       {
         id: 0,
         name: "Self-Transfer",
+        avatar: "/vercel.svg",
       },
       {
         id: 1,
         name: "Aave Protocol",
+        avatar: "/aave.jpeg",
       },
       {
         id: 2,
         name: "Morpho Vaults",
+        avatar: "/morpho.svg",
       },
       {
         id: 3,
         name: "Morpho Borrow Position",
+        avatar: "/morpho.svg",
       },
     ],
   },

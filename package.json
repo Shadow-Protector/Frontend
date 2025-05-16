@@ -17,6 +17,7 @@
     "dropzone": "^6.0.0-beta.2",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21",
+    "moralis": "^2.27.2",
     "next": "15.3.2",
     "preline": "^3.0.1",
     "react": "^19.0.0",

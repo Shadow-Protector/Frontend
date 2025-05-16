@@ -19,6 +19,31 @@ export type ConditionProps = {
   ) => void;
 };
 
+export type TokenDataType = Partial<{
+  name: string;
+  symbol: string;
+  thumbnail: string;
+  token_address: string;
+}>;
+
+export type TipComponentProp = {
+  conditionObject: ConditionOrderDetails;
+  updateConditionObject: (
+    key: keyof ConditionOrderDetails,
+    value: string | number,
+  ) => void;
+  tokenData: TokenDataType[];
+};
+
+export type DepositOrderTokenDataProps = {
+  depositObject: DepositOrderDetails;
+  updateDepositObject: (
+    key: keyof DepositOrderDetails,
+    value: string | number,
+  ) => void;
+  tokenData: TokenDataType[];
+};
+
 export type ChainlinkFinalSectionProps = {
   conditionObject: ConditionOrderDetails;
   updateConditionObject: (
@@ -62,27 +87,17 @@ export type DepositOrderDetails = {
 
 export type DepositOrderProps = {
   depositObject: DepositOrderDetails;
-  updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
   updateDepositObject: (
     key: keyof DepositOrderDetails,
     value: string | number,
   ) => void;
 };
 
-export type DepositFormProps = {
-  depositObject: DepositOrderDetails;
-  updateDepositObjectWithInput: (e: ChangeEvent<HTMLInputElement>) => void;
-  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
-};
-
-export type DepositFormSelectorProps = {
-  depositObject: DepositOrderDetails;
-  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
-};
-
 export type FinalSectionProps = {
   chainId: number;
   depositObject: DepositOrderDetails;
-  updateDepositObjectWithSelector: (e: ChangeEvent<HTMLSelectElement>) => void;
+  updateDepositObject: (
+    key: keyof DepositOrderDetails,
+    value: string | number,
+  ) => void;
 };

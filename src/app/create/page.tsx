@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 
 import { useAccount } from "wagmi";
 
@@ -57,37 +57,13 @@ export default function Page() {
     }));
   };
 
-  const updateDepositObjectWithSelector = (
-    e: ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-
-    console.log("deposit selector", name, value);
-
-    setDepositObject((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const updateDepositObjectWithInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    console.log("deposit input", name, value);
-
-    setDepositObject((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   async function createOrder() {
     console.log("Creating Order");
 
     console.log("Condition", conditionObject);
     console.log("Deposit Object", depositObject);
     if (address) {
-      await createOrderTransaction(address, conditionObject, depositObject);
+      await createOrderTransaction(address, conditionObject);
     }
   }
 
@@ -253,10 +229,6 @@ export default function Page() {
               >
                 <DepositSection
                   depositObject={depositObject}
-                  updateDepositObjectWithInput={updateDepositObjectWithInput}
-                  updateDepositObjectWithSelector={
-                    updateDepositObjectWithSelector
-                  }
                   updateDepositObject={updateDepositObject}
                 />
               </div>
@@ -272,9 +244,7 @@ export default function Page() {
                 <FinalSection
                   chainId={conditionObject.chainId}
                   depositObject={depositObject}
-                  updateDepositObjectWithSelector={
-                    updateDepositObjectWithSelector
-                  }
+                  updateDepositObject={updateDepositObject}
                 />
               </div>
               {/* End First Content */}
