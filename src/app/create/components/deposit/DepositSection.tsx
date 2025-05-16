@@ -148,6 +148,8 @@ function DepositTokenComponent({
   updateDepositObject,
   tokenData,
 }: DepositOrderTokenDataProps) {
+  const [maxBalance, setmaxBalance] = useState(0);
+
   const [selected, setSelected] = useState({
     name: "Select Tip Token",
     symbol: "STP",
@@ -156,7 +158,9 @@ function DepositTokenComponent({
   });
 
   async function updateDepositTokenAddress(token: TokenDataType) {
-    console.log(token);
+    if (token.balance && token.decimals) {
+      setmaxBalance(Number(token.balance) / 10 ** token.decimals);
+    }
     updateDepositObject(
       "depositTokenAddress",
       token.token_address ? token.token_address : "0x",
@@ -240,13 +244,14 @@ function DepositTokenComponent({
               htmlFor="tokenAmount"
               className="block text-sm font-medium mb-2 dark:text-white"
             >
-              Enter Value: {depositObject.tokenAmount}
+              Enter Value: {depositObject.tokenAmount} (Max: {maxBalance})
             </label>
             <div className="relative">
               <input
                 type="number"
                 id="hs-input-with-leading-and-trailing-icon"
                 name="tokenAmount"
+                max={maxBalance}
                 className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 placeholder="0.00"
                 onChange={updateTokenAmount}
@@ -291,7 +296,7 @@ function SwapComponent({
                   />
                 </svg>
               </Checkbox>
-              <Label>Swap Token</Label>
+              <Label>Swap Token (Powered by Aerodrome on Base)</Label>
             </Field>
           </div>
           <br />
@@ -325,7 +330,7 @@ function SwapComponent({
                   />
                 </svg>
               </Checkbox>
-              <Label>Swap Token</Label>
+              <Label>Swap Token (Powered by Aerodrome on Base)</Label>
             </Field>
           </div>
           <br />

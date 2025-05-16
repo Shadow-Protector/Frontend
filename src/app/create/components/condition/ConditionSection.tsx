@@ -42,6 +42,14 @@ export function ConditionSection({
     console.log(chain);
     switchChain({ chainId: Number(chain.id) });
 
+    // Reset Values
+    updateConditionObject("platform", -1);
+    updateConditionObject("parameter", -1);
+    updateConditionObject("platformAddress", "");
+    updateConditionObject("conditionValue", "");
+    updateConditionObject("tipTokenAddress", "");
+    updateConditionObject("tipTokenAmount", "");
+
     if (address) {
       let vaultAddress = await getVaultAddress(chain.id, address);
       console.log("User Vault", vaultAddress);
@@ -437,12 +445,18 @@ function TipComponent({
     token_address: "0x",
   });
 
+  const [maxBalance, setmaxBalance] = useState(0);
+
   async function updateTipTokenAddress(token: TokenDataType) {
-    console.log(token);
+    if (token.balance && token.decimals) {
+      setmaxBalance(Number(token.balance) / 10 ** token.decimals);
+    }
+
     updateConditionObject(
       "tipTokenAddress",
       token.token_address ? token.token_address : "0x",
     );
+    updateConditionObject("decimal", token.decimals ? token.decimals : 0);
     setSelected({
       name: token.name ? token.name : "",
       symbol: token.symbol ? token.symbol : "",
@@ -463,7 +477,7 @@ function TipComponent({
       <>
         <Listbox value={selected} onChange={updateTipTokenAddress}>
           <Label className="block text-sm/6 font-medium text-gray-900">
-            Select Tip Token
+            Select Tip Token : {selected.token_address}
           </Label>
           <div className="relative mt-2">
             <ListboxButton className="grid w-full cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
@@ -523,12 +537,13 @@ function TipComponent({
               htmlFor="tipTokenAmount"
               className="block text-sm font-medium mb-2 dark:text-white"
             >
-              Enter Value: {conditionObject.tipTokenAmount}
+              Enter Value: {conditionObject.tipTokenAmount} (Max: {maxBalance})
             </label>
             <div className="relative">
               <input
                 type="number"
                 id="hs-input-with-leading-and-trailing-icon"
+                max={maxBalance}
                 name="tipTokenAmount"
                 className="py-2.5 sm:py-3 px-4 ps-9 pe-16 block w-full border-gray-200 rounded-lg sm:text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                 placeholder="0.00"

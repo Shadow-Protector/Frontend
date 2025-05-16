@@ -21,6 +21,7 @@ export default function Page() {
       parameter: -1,
       conditionValue: "",
       tipTokenAddress: "",
+      decimal: 0,
       tipTokenAmount: "",
     },
   );
@@ -31,6 +32,7 @@ export default function Page() {
     depositTokenAddress: "",
     depositTokenType: 0,
     convertTokenAddress: "",
+    decimal: 0,
     tokenAmount: "",
     depositPlatform: 0,
     depositPlatformAddress: "",
@@ -79,6 +81,7 @@ export default function Page() {
       conditionValue: "",
       tipTokenAddress: "",
       tipTokenAmount: "",
+      decimal: 0,
     });
 
     setDepositObject({
@@ -87,6 +90,7 @@ export default function Page() {
       depositTokenAddress: "",
       depositTokenType: 0,
       convertTokenAddress: "",
+      decimal: 0,
       tokenAmount: "",
       depositPlatform: 0,
       depositPlatformAddress: "",

@@ -12,6 +12,7 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 import { ConditionData } from "../../data";
 import { getChainlinkPriceData } from "../utils";
 import { ConditionProps, ChainlinkFinalSectionProps } from "../../dataTypes";
+import { base } from "viem/chains";
 
 export function ChainlinkSection({
   conditionObject,
@@ -125,7 +126,7 @@ function ChainlinkFinalSelection({
     "ConditionData",
     ConditionData[conditionObject.chainId].parameterType["0"],
   );
-  const listData = ConditionData[conditionObject.chainId].parameterType["0"];
+  const listData = ConditionData[base.id.toString()].parameterType["0"];
 
   const [selected, setSelected] = useState({
     id: 0,

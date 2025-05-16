@@ -67,25 +67,19 @@ export default function Navbar() {
                 href="#"
                 aria-current="page"
               >
-                Landing
+                Create Order
               </a>
               <a
                 className="font-medium text-gray-600 hover:text-gray-400 focus:outline-hidden focus:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 dark:focus:text-neutral-500"
                 href="#"
               >
-                Account
+                Manage Orders
               </a>
               <a
                 className="font-medium text-gray-600 hover:text-gray-400 focus:outline-hidden focus:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 dark:focus:text-neutral-500"
                 href="#"
               >
-                Work
-              </a>
-              <a
-                className="font-medium text-gray-600 hover:text-gray-400 focus:outline-hidden focus:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 dark:focus:text-neutral-500"
-                href="#"
-              >
-                Blog
+                Manage Vaults
               </a>
             </div>
           </div>

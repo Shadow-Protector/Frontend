@@ -4,6 +4,7 @@ import { ContractData } from "../data";
 import { config } from "@/app/wagmi";
 
 import { chainlinkABI } from "@/app/abi/chainlink";
+import { lendingPoolABI } from "@/app/abi/aave/lendingPool";
 import { tokenABI } from "@/app/abi/token";
 import { deployerABI } from "@/app/abi/deployer";
 import { factoryABI } from "@/app/abi/factory";
@@ -74,6 +75,37 @@ export async function getChainlinkPriceData(
   }
 }
 
+export async function getAavePortfolioData(chainId: string, address: string) {
+  try {
+    const lendingPoolAddress = ContractData[chainId].aavePool;
+
+    console.log("lendingPoolAddress", lendingPoolAddress);
+
+    const portfolioData = await readContract(config, {
+      abi: lendingPoolABI,
+      address: lendingPoolAddress as `0x${string}`,
+      functionName: "getUserAccountData",
+      args: [address as `0x${string}`],
+    });
+    return {
+      totalCollateral: Number(portfolioData[0]) / 10 ** 8,
+      totalDebt: Number(portfolioData[1]) / 10 ** 8,
+      health: Number(portfolioData[5]) / 10 ** 18,
+      value: true,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      totalCollateral: 0,
+      totalDebt: 0,
+      health: 0,
+      value: false,
+    };
+  }
+}
+// before borrow - 10106195191n, 0n, 7579646393n, 7800n, 7500n, 115792089237316195423570985008687907853269984665640564039457584007913129639935n
+// after borrow  - 10106199890n, 2800498746n, 4779151172n, 7800n, 7500n, 2814797158991479156n
+// after borrow  - 10106202390n, 2805871527n, 4773780266n, 7800n, 7500n, 2809407981850196807n
 export async function deployVault(chainId: string) {
   try {
     const deployerAddress: string = ContractData[chainId].deployer;

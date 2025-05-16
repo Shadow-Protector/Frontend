@@ -8,6 +8,7 @@ export type ConditionOrderDetails = {
   parameter: number;
   conditionValue: string;
   tipTokenAddress: string;
+  decimal: number;
   tipTokenAmount: string;
 };
 
@@ -19,11 +20,22 @@ export type ConditionProps = {
   ) => void;
 };
 
+export type AavePortfolioFinalSectionProps = {
+  conditionObject: ConditionOrderDetails;
+  updateConditionObject: (
+    key: keyof ConditionOrderDetails,
+    value: string | number,
+  ) => void;
+  value: boolean;
+};
+
 export type TokenDataType = Partial<{
   name: string;
   symbol: string;
   thumbnail: string;
   token_address: string;
+  balance: string;
+  decimals: number;
 }>;
 
 export type TipComponentProp = {
@@ -79,6 +91,7 @@ export type DepositOrderDetails = {
   depositTokenAddress: string;
   depositTokenType: number;
   convertTokenAddress: string;
+  decimal: number;
   tokenAmount: string;
   depositPlatform: number;
   depositPlatformAddress: string;

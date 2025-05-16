@@ -123,7 +123,18 @@ export const ConditionData = {
       ["1"]: [],
     },
     parameterType: {
-      ["0"]: [],
+      ["0"]: [
+        {
+          id: 0,
+          name: "Greater than current value",
+          avatar: "/greater-than.png",
+        },
+        {
+          id: 1,
+          name: "Lesser than or equal to current value",
+          avatar: "/less-than.png",
+        },
+      ],
       ["1"]: [],
     },
   },
@@ -171,7 +182,18 @@ export const ConditionData = {
       ["1"]: [],
     },
     parameterType: {
-      ["0"]: [],
+      ["0"]: [
+        {
+          id: 0,
+          name: "Greater than current value",
+          avatar: "/greater-than.png",
+        },
+        {
+          id: 1,
+          name: "Lesser than or equal to current value",
+          avatar: "/less-than.png",
+        },
+      ],
       ["1"]: [],
     },
   },
@@ -249,16 +271,19 @@ export const ContractData = {
     handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
     factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
     deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+    aavePool: "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
   },
   [arbitrum.id.toString()]: {
     handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
     factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
     deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+    aavePool: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
   },
   [avalanche.id.toString()]: {
     handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
     factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
     deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+    aavePool: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
   },
 };
 
@@ -282,5 +307,28 @@ export const chainConfiguration = [
     id: base.id.toString(),
     name: "Base",
     avatar: "/base.jpeg",
+  },
+];
+
+export const AavePortfolioParameters = [
+  {
+    id: -1,
+    name: "Select Parameter Condition",
+    avatar: "/vercel.svg",
+  },
+  {
+    id: 0,
+    name: "Total Collateral Value",
+    avatar: "/vercel.svg",
+  },
+  {
+    id: 2,
+    name: "Total Debt Value",
+    avatar: "/vercel.svg",
+  },
+  {
+    id: 4,
+    name: "Health Factor",
+    avatar: "/vercel.svg",
   },
 ];
