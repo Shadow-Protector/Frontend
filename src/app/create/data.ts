@@ -329,6 +329,6 @@ export const AavePortfolioParameters = [
   {
     id: 4,
     name: "Health Factor",
-    avatar: "/vercel.svg",
+    avatar: "/signing.png",
   },
 ];
