@@ -370,7 +370,7 @@ function AavePortfolioFinalSection({
               htmlFor="conditionValue"
               className="block text-sm font-medium mb-2 dark:text-white"
             >
-              Enter Execution Value : ${conditionObject.conditionValue}
+              Enter Execution Value : {conditionObject.conditionValue}
             </label>
             <div className="relative">
               <input
