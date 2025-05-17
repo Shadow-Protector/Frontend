@@ -99,8 +99,7 @@ export type DepositOrderDetails = {
   convertTokenAddress: string;
   decimal: number;
   tokenAmount: string;
-  depositPlatform: number;
-  depositPlatformAddress: string;
+
   repay: number;
 };
 

@@ -21,9 +21,9 @@ import { ConditionData, chainConfiguration } from "../../data";
 
 import { ChainlinkSection } from "./ChainlinkSection";
 import { AavePortfolioSection } from "./AavePortfolioSection";
-import { AaveCollateralSection } from "./AaveCollateralSection";
-import { AaveDebtSection } from "./AaveDebtSection";
-import { MorphoVaultSection } from "./MorphoVaultSection";
+// import { AaveCollateralSection } from "./AaveCollateralSection";
+// import { AaveDebtSection } from "./AaveDebtSection";
+// import { MorphoVaultSection } from "./MorphoVaultSection";
 
 export function ConditionSection({
   conditionObject,
@@ -67,8 +67,8 @@ export function ConditionSection({
       }
 
       const params = new URLSearchParams();
-      params.append("chain", address);
-      params.append("address", chain.id);
+      params.append("chain", chain.id);
+      params.append("address", address);
 
       // Calling Tokens Endpoint
       fetch(`/api/moralis?${params}`)
@@ -278,28 +278,29 @@ function ConditionPlatformAddress({
         updateConditionObject={updateConditionObject}
       />
     );
-  } else if (conditionObject.platform == 2) {
-    return (
-      <AaveCollateralSection
-        conditionObject={conditionObject}
-        updateConditionObject={updateConditionObject}
-      />
-    );
-  } else if (conditionObject.platform == 3) {
-    return (
-      <AaveDebtSection
-        conditionObject={conditionObject}
-        updateConditionObject={updateConditionObject}
-      />
-    );
-  } else if (conditionObject.platform == 4) {
-    return (
-      <MorphoVaultSection
-        conditionObject={conditionObject}
-        updateConditionObject={updateConditionObject}
-      />
-    );
   }
+  // } else if (conditionObject.platform == 2) {
+  //   return (
+  //     <AaveCollateralSection
+  //       conditionObject={conditionObject}
+  //       updateConditionObject={updateConditionObject}
+  //     />
+  //   );
+  // } else if (conditionObject.platform == 3) {
+  //   return (
+  //     <AaveDebtSection
+  //       conditionObject={conditionObject}
+  //       updateConditionObject={updateConditionObject}
+  //     />
+  //   );
+  // } else if (conditionObject.platform == 4) {
+  //   return (
+  //     <MorphoVaultSection
+  //       conditionObject={conditionObject}
+  //       updateConditionObject={updateConditionObject}
+  //     />
+  //   );
+  // }
 
   // async function updateConditionPlatformAddress(
   //   e: ChangeEvent<HTMLSelectElement>,

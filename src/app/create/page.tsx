@@ -9,9 +9,14 @@ import { ConditionSection } from "./components/condition/ConditionSection";
 import { DepositSection } from "./components/deposit/DepositSection";
 import { FinalSection } from "./components/final/FinalSection";
 
-import { createOrderTransaction } from "./components/utils";
+import {
+  createOrderTransaction,
+  callDepositTransaction,
+} from "./components/utils";
 export default function Page() {
   const { address } = useAccount();
+
+  const [platform, setPlatform] = useState(-1);
   const [conditionObject, setConditionObject] = useState<ConditionOrderDetails>(
     {
       chainId: 0,
@@ -34,10 +39,14 @@ export default function Page() {
     convertTokenAddress: "",
     decimal: 0,
     tokenAmount: "",
-    depositPlatform: 0,
-    depositPlatformAddress: "",
     repay: 0,
   });
+
+  const updateDepositPlatform = (value: number) => {
+    if (value >= 0) {
+      setPlatform(value);
+    }
+  };
 
   const updateConditionObject = (
     key: keyof ConditionOrderDetails,
@@ -59,13 +68,28 @@ export default function Page() {
     }));
   };
 
+  function openInNewTab(url: string) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
   async function createOrder() {
     console.log("Creating Order");
-
     console.log("Condition", conditionObject);
     console.log("Deposit Object", depositObject);
+    console.log("Platform", platform);
     if (address) {
-      await createOrderTransaction(address, conditionObject);
+      const orderId = await createOrderTransaction(address, conditionObject);
+      if (orderId) {
+        const result = await callDepositTransaction(
+          orderId,
+          depositObject,
+          platform,
+        );
+        if (result) {
+          console.log(result);
+          openInNewTab(`https://basescan.org/tx/${result}`);
+        }
+      }
     }
   }
 
@@ -92,8 +116,6 @@ export default function Page() {
       convertTokenAddress: "",
       decimal: 0,
       tokenAmount: "",
-      depositPlatform: 0,
-      depositPlatformAddress: "",
       repay: 0,
     });
   }
@@ -245,11 +267,7 @@ export default function Page() {
             }'
                 style={{ display: "none" }}
               >
-                <FinalSection
-                  chainId={conditionObject.chainId}
-                  depositObject={depositObject}
-                  updateDepositObject={updateDepositObject}
-                />
+                <FinalSection updateDepositPlatform={updateDepositPlatform} />
               </div>
               {/* End First Content */}
 
@@ -262,7 +280,7 @@ export default function Page() {
               >
                 <div className="p-4 h-48 bg-gray-50 flex justify-center items-center border border-dashed border-gray-200 rounded-xl dark:bg-neutral-700 dark:border-neutral-600">
                   <h3 className="text-gray-500 dark:text-neutral-400">
-                    Final content
+                    Order Submitted
                   </h3>
                 </div>
               </div>

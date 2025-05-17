@@ -1,5 +1,5 @@
-import { readContract, writeContract, switchChain } from "wagmi/actions";
-import { writeContracts } from "@wagmi/core/experimental";
+import { readContract, writeContract } from "wagmi/actions";
+// import { writeContracts } from "@wagmi/core/experimental";
 import { ContractData } from "../data";
 import { config } from "@/app/wagmi";
 
@@ -11,8 +11,8 @@ import { factoryABI } from "@/app/abi/factory";
 import { vaultABI } from "@/app/abi/vault";
 
 // import { handlerABI } from "@/app/abi/handler";
-import { ConditionOrderDetails } from "../dataTypes";
-import { base, arbitrum, avalanche } from "viem/chains";
+import { ConditionOrderDetails, DepositOrderDetails } from "../dataTypes";
+import { base } from "viem/chains";
 
 export async function getVaultAddress(chainId: string, address: string) {
   try {
@@ -124,80 +124,125 @@ export async function createOrderTransaction(
   try {
     // Creating Order
     console.log("Creating Order");
-    console.log(conditionObject.chainId, base.id);
-    if (
-      conditionObject.chainId == base.id ||
-      conditionObject.chainId == avalanche.id ||
-      conditionObject.chainId == arbitrum.id
-    ) {
-      await switchChain(config, { chainId: conditionObject.chainId });
-      await writeContract(config, {
-        abi: tokenABI,
-        address: conditionObject.tipTokenAddress as `0x${string}`,
-        functionName: "approve",
-        args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
-      });
-      await writeContract(config, {
-        abi: vaultABI,
-        address: conditionObject.vaultAddress as `0x${string}`,
-        functionName: "createOrder",
-        args: [
-          conditionObject.platform,
-          conditionObject.platformAddress as `0x${string}`,
-          conditionObject.parameter,
-          base.id,
-          0,
-          BigInt(Number(conditionObject.conditionValue)),
-          conditionObject.tipTokenAddress as `0x${string}`,
-          BigInt(100),
-        ],
-      });
+    console.log(conditionObject);
 
-      const salt = getRandomIntInclusive(0, 10000);
-
-      await writeContracts(config, {
-        contracts: [
-          {
-            address: conditionObject.tipTokenAddress as `0x${string}`,
-            abi: tokenABI,
-            functionName: "approve",
-            args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
-          },
-          {
-            abi: vaultABI,
-            address: conditionObject.vaultAddress as `0x${string}`,
-            functionName: "createOrder",
-            args: [
-              conditionObject.platform,
-              conditionObject.platformAddress as `0x${string}`,
-              conditionObject.parameter,
-              base.id,
-              salt,
-              BigInt(Number(conditionObject.conditionValue)),
-              conditionObject.tipTokenAddress as `0x${string}`,
-              BigInt(100),
-            ],
-          },
-        ],
-      });
-
-      console.log("Order Creation Done");
-
-      const orderId = await readContract(config, {
-        abi: vaultABI,
-        address: conditionObject.vaultAddress as `0x${string}`,
-        functionName: "generateKey",
-        args: [
-          conditionObject.platform,
-          conditionObject.platformAddress as `0x${string}`,
-          conditionObject.parameter,
-          base.id,
-          salt,
-        ],
-      });
-
-      console.log("OrderId:", orderId);
+    let conditionValue = Number(conditionObject.conditionValue);
+    let tipAmount = Number(conditionObject.tipTokenAmount);
+    tipAmount = tipAmount * 10 ** conditionObject.decimal;
+    if (conditionObject.parameter == 0) {
+      conditionValue *= 100;
     }
+
+    const salt = getRandomIntInclusive(0, 10000);
+
+    await writeContract(config, {
+      abi: tokenABI,
+      address: conditionObject.tipTokenAddress as `0x${string}`,
+      functionName: "approve",
+      args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
+    });
+    await writeContract(config, {
+      abi: vaultABI,
+      address: conditionObject.vaultAddress as `0x${string}`,
+      functionName: "createOrder",
+      args: [
+        conditionObject.platform,
+        conditionObject.platformAddress as `0x${string}`,
+        conditionObject.parameter,
+        base.id,
+        salt,
+        BigInt(conditionValue),
+        conditionObject.tipTokenAddress as `0x${string}`,
+        BigInt(tipAmount),
+      ],
+    });
+
+    // await writeContracts(config, {
+    //   contracts: [
+    //     {
+    //       address: conditionObject.tipTokenAddress as `0x${string}`,
+    //       abi: tokenABI,
+    //       functionName: "approve",
+    //       args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
+    //     },
+    //     {
+    //       abi: vaultABI,
+    //       address: conditionObject.vaultAddress as `0x${string}`,
+    //       functionName: "createOrder",
+    //       args: [
+    //         conditionObject.platform,
+    //         conditionObject.platformAddress as `0x${string}`,
+    //         conditionObject.parameter,
+    //         base.id,
+    //         salt,
+    //         BigInt(conditionValue),
+    //         conditionObject.tipTokenAddress as `0x${string}`,
+    //         BigInt(100000),
+    //       ],
+    //     },
+    //   ],
+    // });
+
+    console.log("Order Creation Done");
+
+    const orderId = await readContract(config, {
+      abi: vaultABI,
+      address: conditionObject.vaultAddress as `0x${string}`,
+      functionName: "generateKey",
+      args: [
+        conditionObject.platform,
+        conditionObject.platformAddress as `0x${string}`,
+        conditionObject.parameter,
+        base.id,
+        salt,
+      ],
+    });
+
+    console.log("OrderId:", orderId);
+    return orderId;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function callDepositTransaction(
+  orderId: string,
+  depsitObject: DepositOrderDetails,
+  platform: number,
+) {
+  console.log("Depositing Assets");
+  try {
+    let tokenAmount = Number(depsitObject.tokenAmount);
+    tokenAmount = tokenAmount * 10 ** depsitObject.decimal;
+
+    const swapToken =
+      depsitObject.convertTokenAddress == ""
+        ? depsitObject.depositTokenAddress
+        : depsitObject.convertTokenAddress;
+
+    console.log("swap", swapToken);
+    await writeContract(config, {
+      abi: tokenABI,
+      address: depsitObject.depositTokenAddress as `0x${string}`,
+      functionName: "approve",
+      args: [depsitObject.vaultAddress as `0x${string}`, BigInt(tokenAmount)],
+    });
+
+    const result = await writeContract(config, {
+      abi: vaultABI,
+      address: depsitObject.vaultAddress as `0x${string}`,
+      functionName: "depositAsset",
+      args: [
+        orderId as `0x${string}`,
+        depsitObject.depositTokenAddress as `0x${string}`,
+        0,
+        swapToken as `0x${string}`,
+        BigInt(tokenAmount),
+        platform,
+        false,
+      ],
+    });
+    return result;
   } catch (e) {
     console.log(e);
   }

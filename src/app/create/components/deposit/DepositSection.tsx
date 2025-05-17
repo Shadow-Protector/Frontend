@@ -57,8 +57,8 @@ export function DepositSection({
         updateDepositObject("vaultAddress", vaultAddress);
       }
       const params = new URLSearchParams();
-      params.append("chain", address);
-      params.append("address", chain.id);
+      params.append("chain", chain.id);
+      params.append("address", address);
 
       // Calling Tokens Endpoint
       fetch(`/api/moralis?${params}`)
@@ -165,6 +165,7 @@ function DepositTokenComponent({
       "depositTokenAddress",
       token.token_address ? token.token_address : "0x",
     );
+    updateDepositObject("decimal", token.decimals ? token.decimals : 0);
     setSelected({
       name: token.name ? token.name : "",
       symbol: token.symbol ? token.symbol : "",
