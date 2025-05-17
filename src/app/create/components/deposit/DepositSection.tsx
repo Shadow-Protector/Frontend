@@ -345,7 +345,7 @@ function SwapComponent({
 const SwapTokenData = [
   {
     id: 1,
-    name: "CBETH",
+    name: "cbETH",
     avatar: "/cbeth.png",
   },
   {
