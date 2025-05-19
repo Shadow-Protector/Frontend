@@ -75,10 +75,6 @@ export default function Page() {
     }));
   };
 
-  function openInNewTab(url: string) {
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-
   async function createOrder() {
     console.log("Creating Order");
     console.log("Condition", conditionObject);
@@ -106,8 +102,7 @@ export default function Page() {
           batchOperations,
         );
         if (result) {
-          console.log(result);
-          openInNewTab(`https://basescan.org/tx/${result}`);
+          console.log("Deposit Operation", result);
         }
       }
     }
