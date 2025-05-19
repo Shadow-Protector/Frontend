@@ -1,6 +1,6 @@
 import { readContract, writeContract } from "wagmi/actions";
-// import { writeContracts } from "@wagmi/core/experimental";
-import { ContractData } from "../data";
+import { writeContracts } from "@wagmi/core/experimental";
+import { ContractData, AaveReserveTokens, MorphoVaultTokens } from "../data";
 import { config } from "@/app/wagmi";
 
 import { chainlinkABI } from "@/app/abi/chainlink";
@@ -29,6 +29,29 @@ export async function getVaultAddress(chainId: string, address: string) {
   } catch (e) {
     console.log(e);
   }
+}
+
+async function getConditionValue(
+  platform: number,
+  platformAddress: string,
+  parameter: number,
+  conditionValue: string,
+) {
+  let result = Number(conditionValue);
+  // Chainlink price Feed
+  if (platform == 0) {
+    result = result * 100;
+  }
+  // Aave OverAll portfolio
+  else if (platform == 1) {
+    if (parameter == 0 || parameter == 1) {
+      result = result * 10 ** 8;
+    } else {
+      result = result * 10 ** 18;
+    }
+  }
+
+  return BigInt(result);
 }
 
 export async function getChainlinkPriceData(
@@ -120,68 +143,89 @@ export async function deployVault(chainId: string) {
 export async function createOrderTransaction(
   address: string,
   conditionObject: ConditionOrderDetails,
+  batchOperation: boolean,
 ) {
   try {
     // Creating Order
     console.log("Creating Order");
     console.log(conditionObject);
 
-    let conditionValue = Number(conditionObject.conditionValue);
     let tipAmount = Number(conditionObject.tipTokenAmount);
     tipAmount = tipAmount * 10 ** conditionObject.decimal;
-    if (conditionObject.parameter == 0) {
-      conditionValue *= 100;
-    }
+
+    const platformAddress = getPlatformAddresss(
+      conditionObject.platform,
+      conditionObject.platformAddress,
+    );
+
+    const conditionValueResult = await getConditionValue(
+      conditionObject.platform,
+      conditionObject.platformAddress,
+      conditionObject.parameter,
+      conditionObject.conditionValue,
+    );
 
     const salt = getRandomIntInclusive(0, 10000);
 
-    await writeContract(config, {
-      abi: tokenABI,
-      address: conditionObject.tipTokenAddress as `0x${string}`,
-      functionName: "approve",
-      args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
-    });
-    await writeContract(config, {
-      abi: vaultABI,
-      address: conditionObject.vaultAddress as `0x${string}`,
-      functionName: "createOrder",
-      args: [
-        conditionObject.platform,
-        conditionObject.platformAddress as `0x${string}`,
-        conditionObject.parameter,
-        base.id,
-        salt,
-        BigInt(conditionValue),
-        conditionObject.tipTokenAddress as `0x${string}`,
-        BigInt(tipAmount),
-      ],
-    });
+    console.log(
+      `platformAddres:${platformAddress} \n conditionValueResult:${conditionValueResult}`,
+    );
 
-    // await writeContracts(config, {
-    //   contracts: [
-    //     {
-    //       address: conditionObject.tipTokenAddress as `0x${string}`,
-    //       abi: tokenABI,
-    //       functionName: "approve",
-    //       args: [conditionObject.vaultAddress as `0x${string}`, BigInt(100)],
-    //     },
-    //     {
-    //       abi: vaultABI,
-    //       address: conditionObject.vaultAddress as `0x${string}`,
-    //       functionName: "createOrder",
-    //       args: [
-    //         conditionObject.platform,
-    //         conditionObject.platformAddress as `0x${string}`,
-    //         conditionObject.parameter,
-    //         base.id,
-    //         salt,
-    //         BigInt(conditionValue),
-    //         conditionObject.tipTokenAddress as `0x${string}`,
-    //         BigInt(100000),
-    //       ],
-    //     },
-    //   ],
-    // });
+    if (batchOperation) {
+      await writeContracts(config, {
+        contracts: [
+          {
+            address: conditionObject.tipTokenAddress as `0x${string}`,
+            abi: tokenABI,
+            functionName: "approve",
+            args: [
+              conditionObject.vaultAddress as `0x${string}`,
+              BigInt(tipAmount),
+            ],
+          },
+          {
+            abi: vaultABI,
+            address: conditionObject.vaultAddress as `0x${string}`,
+            functionName: "createOrder",
+            args: [
+              conditionObject.platform,
+              platformAddress as `0x${string}`,
+              conditionObject.parameter,
+              base.id,
+              salt,
+              conditionValueResult,
+              conditionObject.tipTokenAddress as `0x${string}`,
+              BigInt(tipAmount),
+            ],
+          },
+        ],
+      });
+    } else {
+      await writeContract(config, {
+        abi: tokenABI,
+        address: conditionObject.tipTokenAddress as `0x${string}`,
+        functionName: "approve",
+        args: [
+          conditionObject.vaultAddress as `0x${string}`,
+          BigInt(tipAmount),
+        ],
+      });
+      await writeContract(config, {
+        abi: vaultABI,
+        address: conditionObject.vaultAddress as `0x${string}`,
+        functionName: "createOrder",
+        args: [
+          conditionObject.platform,
+          platformAddress as `0x${string}`,
+          conditionObject.parameter,
+          base.id,
+          salt,
+          conditionValueResult,
+          conditionObject.tipTokenAddress as `0x${string}`,
+          BigInt(tipAmount),
+        ],
+      });
+    }
 
     console.log("Order Creation Done");
 
@@ -191,7 +235,7 @@ export async function createOrderTransaction(
       functionName: "generateKey",
       args: [
         conditionObject.platform,
-        conditionObject.platformAddress as `0x${string}`,
+        platformAddress as `0x${string}`,
         conditionObject.parameter,
         base.id,
         salt,
@@ -209,39 +253,72 @@ export async function callDepositTransaction(
   orderId: string,
   depsitObject: DepositOrderDetails,
   platform: number,
+  batchOperation: boolean,
 ) {
   console.log("Depositing Assets");
   try {
     let tokenAmount = Number(depsitObject.tokenAmount);
     tokenAmount = tokenAmount * 10 ** depsitObject.decimal;
 
-    const swapToken =
-      depsitObject.convertTokenAddress == ""
-        ? depsitObject.depositTokenAddress
-        : depsitObject.convertTokenAddress;
+    const swapToken = depsitObject.depositTokenAddress;
 
     console.log("swap", swapToken);
-    await writeContract(config, {
-      abi: tokenABI,
-      address: depsitObject.depositTokenAddress as `0x${string}`,
-      functionName: "approve",
-      args: [depsitObject.vaultAddress as `0x${string}`, BigInt(tokenAmount)],
-    });
 
-    const result = await writeContract(config, {
-      abi: vaultABI,
-      address: depsitObject.vaultAddress as `0x${string}`,
-      functionName: "depositAsset",
-      args: [
-        orderId as `0x${string}`,
-        depsitObject.depositTokenAddress as `0x${string}`,
-        0,
-        swapToken as `0x${string}`,
-        BigInt(tokenAmount),
-        platform,
-        false,
-      ],
-    });
+    const tokenType = getDepositTokenType(depsitObject.depositTokenAddress);
+    const [platformId, repay] = getPlatformData(platform);
+    let result = "";
+    if (batchOperation) {
+      await writeContracts(config, {
+        contracts: [
+          {
+            address: depsitObject.depositTokenAddress as `0x${string}`,
+            abi: tokenABI,
+            functionName: "approve",
+            args: [
+              depsitObject.vaultAddress as `0x${string}`,
+              BigInt(tokenAmount),
+            ],
+          },
+          {
+            abi: vaultABI,
+            address: depsitObject.vaultAddress as `0x${string}`,
+            functionName: "depositAsset",
+            args: [
+              orderId as `0x${string}`,
+              depsitObject.depositTokenAddress as `0x${string}`,
+              tokenType,
+              swapToken as `0x${string}`,
+              BigInt(tokenAmount),
+              platformId,
+              repay,
+            ],
+          },
+        ],
+      });
+    } else {
+      await writeContract(config, {
+        abi: tokenABI,
+        address: depsitObject.depositTokenAddress as `0x${string}`,
+        functionName: "approve",
+        args: [depsitObject.vaultAddress as `0x${string}`, BigInt(tokenAmount)],
+      });
+
+      result = await writeContract(config, {
+        abi: vaultABI,
+        address: depsitObject.vaultAddress as `0x${string}`,
+        functionName: "depositAsset",
+        args: [
+          orderId as `0x${string}`,
+          depsitObject.depositTokenAddress as `0x${string}`,
+          tokenType,
+          swapToken as `0x${string}`,
+          BigInt(tokenAmount),
+          platform,
+          false,
+        ],
+      });
+    }
+
     return result;
   } catch (e) {
     console.log(e);
@@ -250,4 +327,32 @@ export async function callDepositTransaction(
 
 function getRandomIntInclusive(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getPlatformAddresss(platform: number, platformAddress: string) {
+  if (platform == 0) return platformAddress;
+  else if (platform == 1) return "0x0000000000000000000000000000000000000000";
+  // TODO: ADD MORE PLATFORMS
+  return platformAddress;
+}
+
+function getDepositTokenType(tokenAddress: string) {
+  if (AaveReserveTokens.filter((aToken) => aToken === tokenAddress)) return 1;
+
+  const morphoVaultMatch = MorphoVaultTokens.find(
+    (vaultToken) => vaultToken.vault === tokenAddress,
+  );
+  if (morphoVaultMatch) {
+    return morphoVaultMatch.output;
+  }
+
+  return 0;
+}
+
+function getPlatformData(platform: number): [number, boolean] {
+  if (platform == 1) return [1, false];
+
+  if (platform == 2) return [1, true];
+
+  return [platform, false];
 }

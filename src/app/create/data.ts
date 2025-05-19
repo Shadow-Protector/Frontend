@@ -275,8 +275,8 @@ export const ContractData = {
   },
   [arbitrum.id.toString()]: {
     handler: "0x8803134877fb48bb1E4D404a91ceC43327aE45A1",
-    factory: "0x1ECd0ef942ae53C35F4790BE9C4D3f546FD598D9",
-    deployer: "0x16267fe0Cf31C8d4d2f650f5b29267a5536b1106",
+    factory: "0xdE8bb0fbcA6deE981c607C54f94bdd34A9D15362",
+    deployer: "0xEc9A1021cC0d4619ac6405a648239bEB0bFCf76C",
     aavePool: "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
   },
   [avalanche.id.toString()]: {
@@ -331,4 +331,17 @@ export const AavePortfolioParameters = [
     name: "Health Factor",
     avatar: "/signing.png",
   },
+];
+
+export const AaveReserveTokens = [
+  "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+  "0xcf3D55c10DB69f28fD1A75Bd73f3D8A2d9c595ad",
+  "0x0a1d576f3eFeF75b330424287a95A366e8281D54",
+  "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
+  "0x7C307e128efA31F540F2E2d976C995E0B65F51F6",
+  "0x99CBC45ea5bb7eF3a5BC08FB1B7E56bB2442Ef0D",
+];
+
+export const MorphoVaultTokens = [
+  { vault: "0x7BfA7C4f149E7415b73bdeDfe609237e29CBF34A", output: 3 },
 ];

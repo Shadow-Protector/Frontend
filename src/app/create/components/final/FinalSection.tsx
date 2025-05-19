@@ -24,16 +24,21 @@ const PlatformSelection = [
   },
   {
     id: 1,
-    name: "Aave Protocol",
+    name: "Supply to Aave Protocol",
     avatar: "/aave.jpeg",
   },
   {
     id: 2,
+    name: "Repay to Aave Protocol",
+    avatar: "/aave.jpeg",
+  },
+  {
+    id: 3,
     name: "Morpho Vaults",
     avatar: "/morpho.svg",
   },
   {
-    id: 3,
+    id: 4,
     name: "Morpho Borrow Position",
     avatar: "/morpho.svg",
   },
@@ -118,7 +123,7 @@ export function HandleSection({ platformValue }: { platformValue: number }) {
   if (platformValue == 1) {
     return <AaveDepositSection />;
   }
-  if (platformValue > 1 && platformValue <= 1000) {
+  if (platformValue > 2 && platformValue <= 1000) {
     return <MorphoVaultSection platformValue={platformValue} />;
   }
   return;

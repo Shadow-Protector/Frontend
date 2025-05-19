@@ -2,6 +2,7 @@
 import { useState } from "react";
 
 import { useAccount } from "wagmi";
+import { useCapabilities } from "wagmi/experimental";
 
 import { ConditionOrderDetails, DepositOrderDetails } from "./dataTypes";
 import Navbar from "../components/nav/Navbar";
@@ -13,10 +14,16 @@ import {
   createOrderTransaction,
   callDepositTransaction,
 } from "./components/utils";
+import { arbitrum } from "viem/chains";
 export default function Page() {
   const { address } = useAccount();
-
+  const { data: capabilities } = useCapabilities();
   const [platform, setPlatform] = useState(-1);
+
+  if (capabilities) {
+    console.log(capabilities[arbitrum.id]["atomicBatch"]["supported"]);
+  }
+
   const [conditionObject, setConditionObject] = useState<ConditionOrderDetails>(
     {
       chainId: 0,
@@ -78,12 +85,25 @@ export default function Page() {
     console.log("Deposit Object", depositObject);
     console.log("Platform", platform);
     if (address) {
-      const orderId = await createOrderTransaction(address, conditionObject);
+      let batchOperations = false;
+      if (
+        capabilities &&
+        capabilities[conditionObject.chainId]["atomicBatch"]["supported"]
+      ) {
+        batchOperations = true;
+      }
+
+      const orderId = await createOrderTransaction(
+        address,
+        conditionObject,
+        batchOperations,
+      );
       if (orderId) {
         const result = await callDepositTransaction(
           orderId,
           depositObject,
           platform,
+          batchOperations,
         );
         if (result) {
           console.log(result);
