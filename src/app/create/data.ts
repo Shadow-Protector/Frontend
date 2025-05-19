@@ -343,5 +343,5 @@ export const AaveReserveTokens = [
 ];
 
 export const MorphoVaultTokens = [
-  { vault: "0x7BfA7C4f149E7415b73bdeDfe609237e29CBF34A", output: 3 },
+  { vault: "0x7bfa7c4f149e7415b73bdedfe609237e29cbf34a", output: 3 },
 ];

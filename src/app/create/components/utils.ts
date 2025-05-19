@@ -251,41 +251,58 @@ export async function createOrderTransaction(
 
 export async function callDepositTransaction(
   orderId: string,
-  depsitObject: DepositOrderDetails,
+  depositObject: DepositOrderDetails,
   platform: number,
   batchOperation: boolean,
 ) {
   console.log("Depositing Assets");
   try {
-    let tokenAmount = Number(depsitObject.tokenAmount);
-    tokenAmount = tokenAmount * 10 ** depsitObject.decimal;
+    let tokenAmount = Number(depositObject.tokenAmount);
+    tokenAmount = tokenAmount * 10 ** depositObject.decimal;
 
-    const swapToken = depsitObject.depositTokenAddress;
+    const swapToken = depositObject.depositTokenAddress;
 
     console.log("swap", swapToken);
 
-    const tokenType = getDepositTokenType(depsitObject.depositTokenAddress);
+    const tokenType = getDepositTokenType(depositObject.depositTokenAddress);
     const [platformId, repay] = getPlatformData(platform);
     let result = "";
+
+    console.log("DepsositTransaction Params: Start");
+    console.log("Approve", [
+      depositObject.vaultAddress as `0x${string}`,
+      BigInt(tokenAmount),
+    ]);
+    console.log("Deposit", [
+      orderId as `0x${string}`,
+      depositObject.depositTokenAddress as `0x${string}`,
+      tokenType,
+      swapToken as `0x${string}`,
+      BigInt(tokenAmount),
+      platformId,
+      repay,
+    ]);
+    console.log("Deposit Params:END");
+
     if (batchOperation) {
       await writeContracts(config, {
         contracts: [
           {
-            address: depsitObject.depositTokenAddress as `0x${string}`,
+            address: depositObject.depositTokenAddress as `0x${string}`,
             abi: tokenABI,
             functionName: "approve",
             args: [
-              depsitObject.vaultAddress as `0x${string}`,
+              depositObject.vaultAddress as `0x${string}`,
               BigInt(tokenAmount),
             ],
           },
           {
             abi: vaultABI,
-            address: depsitObject.vaultAddress as `0x${string}`,
+            address: depositObject.vaultAddress as `0x${string}`,
             functionName: "depositAsset",
             args: [
               orderId as `0x${string}`,
-              depsitObject.depositTokenAddress as `0x${string}`,
+              depositObject.depositTokenAddress as `0x${string}`,
               tokenType,
               swapToken as `0x${string}`,
               BigInt(tokenAmount),
@@ -298,23 +315,26 @@ export async function callDepositTransaction(
     } else {
       await writeContract(config, {
         abi: tokenABI,
-        address: depsitObject.depositTokenAddress as `0x${string}`,
+        address: depositObject.depositTokenAddress as `0x${string}`,
         functionName: "approve",
-        args: [depsitObject.vaultAddress as `0x${string}`, BigInt(tokenAmount)],
+        args: [
+          depositObject.vaultAddress as `0x${string}`,
+          BigInt(tokenAmount),
+        ],
       });
 
       result = await writeContract(config, {
         abi: vaultABI,
-        address: depsitObject.vaultAddress as `0x${string}`,
+        address: depositObject.vaultAddress as `0x${string}`,
         functionName: "depositAsset",
         args: [
           orderId as `0x${string}`,
-          depsitObject.depositTokenAddress as `0x${string}`,
+          depositObject.depositTokenAddress as `0x${string}`,
           tokenType,
           swapToken as `0x${string}`,
           BigInt(tokenAmount),
           platform,
-          false,
+          repay,
         ],
       });
     }
@@ -337,15 +357,12 @@ function getPlatformAddresss(platform: number, platformAddress: string) {
 }
 
 function getDepositTokenType(tokenAddress: string) {
-  if (AaveReserveTokens.filter((aToken) => aToken === tokenAddress)) return 1;
-
-  const morphoVaultMatch = MorphoVaultTokens.find(
-    (vaultToken) => vaultToken.vault === tokenAddress,
-  );
-  if (morphoVaultMatch) {
-    return morphoVaultMatch.output;
+  for (const vault of MorphoVaultTokens) {
+    if (vault.vault === tokenAddress) {
+      return vault.output;
+    }
   }
-
+  if (AaveReserveTokens.filter((aToken) => aToken === tokenAddress)) return 1;
   return 0;
 }
 
