@@ -45,6 +45,7 @@ async function getConditionValue(
       result = result * BigInt(10 ** 16);
     }
   }
+  console.log(platform, parameter, result);
   return result;
 }
 

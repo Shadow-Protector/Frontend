@@ -228,8 +228,12 @@ function AavePortfolioFinalSection({
     avatar: string;
   }) {
     if (value.id != -1 && conditionSelected.id != -1) {
-      console.log("final Value:", value.id + conditionSelected.id);
+      console.log(
+        "updateAaveParam: Parameter final Value:",
+        value.id + conditionSelected.id,
+      );
       updateConditionObject("parameter", value.id + conditionSelected.id);
+      console.log("Updated Value", conditionObject.parameter);
     }
     setaaveParamSelected(value);
   }
@@ -240,8 +244,12 @@ function AavePortfolioFinalSection({
     avatar: string;
   }) {
     if (value.id != -1 && aaveParamSelected.id != -1) {
-      console.log("final Value:", value.id + aaveParamSelected.id);
-      updateConditionObject("parameter", value.id + conditionSelected.id);
+      console.log(
+        "updateCondition: parameter final Value:",
+        value.id + aaveParamSelected.id,
+      );
+      updateConditionObject("parameter", value.id + aaveParamSelected.id);
+      console.log("Updated Value", conditionObject.parameter);
     }
 
     setconditionSelected(value);
