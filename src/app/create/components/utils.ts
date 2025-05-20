@@ -33,25 +33,19 @@ export async function getVaultAddress(chainId: string, address: string) {
 
 async function getConditionValue(
   platform: number,
-  platformAddress: string,
   parameter: number,
   conditionValue: string,
 ) {
-  let result = Number(conditionValue);
-  // Chainlink price Feed
-  if (platform == 0) {
-    result = result * 100;
-  }
+  let result = BigInt(Number(conditionValue) * 100);
   // Aave OverAll portfolio
-  else if (platform == 1) {
-    if (parameter == 0 || parameter == 1) {
-      result = result * 10 ** 8;
+  if (platform == 1) {
+    if (parameter <= 3) {
+      result = result * BigInt(10 ** 6);
     } else {
-      result = result * 10 ** 18;
+      result = result * BigInt(10 ** 16);
     }
   }
-
-  return BigInt(result);
+  return result;
 }
 
 export async function getChainlinkPriceData(
@@ -160,7 +154,6 @@ export async function createOrderTransaction(
 
     const conditionValueResult = await getConditionValue(
       conditionObject.platform,
-      conditionObject.platformAddress,
       conditionObject.parameter,
       conditionObject.conditionValue,
     );
