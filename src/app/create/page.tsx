@@ -99,7 +99,7 @@ export default function Page() {
           orderId,
           depositObject,
           platform,
-          batchOperations,
+          false,
         );
         if (result) {
           console.log("Deposit Operation", result);
