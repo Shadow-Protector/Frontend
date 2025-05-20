@@ -258,7 +258,9 @@ export async function callDepositTransaction(
 
     console.log("swap", swapToken);
 
-    const tokenType = getDepositTokenType(depositObject.depositTokenAddress);
+    const [tokenType, baseToken] = getDepositTokenType(
+      depositObject.depositTokenAddress,
+    );
     const [platformId, repay] = getPlatformData(platform);
     let result = "";
 
@@ -296,9 +298,9 @@ export async function callDepositTransaction(
             functionName: "depositAsset",
             args: [
               orderId as `0x${string}`,
-              depositObject.depositTokenAddress as `0x${string}`,
+              baseToken as `0x${string}`,
               tokenType,
-              swapToken as `0x${string}`,
+              baseToken as `0x${string}`,
               BigInt(tokenAmount),
               platformId,
               repay,
@@ -323,9 +325,9 @@ export async function callDepositTransaction(
         functionName: "depositAsset",
         args: [
           orderId as `0x${string}`,
-          depositObject.depositTokenAddress as `0x${string}`,
+          baseToken as `0x${string}`,
           tokenType,
-          swapToken as `0x${string}`,
+          baseToken as `0x${string}`,
           BigInt(tokenAmount),
           platform,
           repay,
@@ -350,18 +352,18 @@ function getPlatformAddresss(platform: number, platformAddress: string) {
   return platformAddress;
 }
 
-function getDepositTokenType(tokenAddress: string) {
+function getDepositTokenType(tokenAddress: string): [number, string] {
   for (const vault of MorphoVaultTokens) {
     if (vault.vault === tokenAddress) {
-      return vault.output;
+      return [vault.output, vault.baseToken];
     }
   }
   for (const aToken of AaveReserveTokens) {
-    if (aToken === tokenAddress) {
-      return 1;
+    if (aToken.aToken === tokenAddress) {
+      return [1, aToken.baseToken];
     }
   }
-  return 0;
+  return [0, tokenAddress];
 }
 
 function getPlatformData(platform: number): [number, boolean] {

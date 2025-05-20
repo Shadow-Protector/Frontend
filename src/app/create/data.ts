@@ -334,14 +334,36 @@ export const AavePortfolioParameters = [
 ];
 
 export const AaveReserveTokens = [
-  "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
-  "0xcf3D55c10DB69f28fD1A75Bd73f3D8A2d9c595ad",
-  "0x0a1d576f3eFeF75b330424287a95A366e8281D54",
-  "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
-  "0x7C307e128efA31F540F2E2d976C995E0B65F51F6",
-  "0x99CBC45ea5bb7eF3a5BC08FB1B7E56bB2442Ef0D",
+  {
+    aToken: "0xD4a0e0b9149BCee3C920d2E00b5dE09138fd8bb7",
+    baseToken: "0x4200000000000000000000000000000000000006",
+  },
+  {
+    aToken: "0xcf3D55c10DB69f28fD1A75Bd73f3D8A2d9c595ad",
+    baseToken: "0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22",
+  },
+  {
+    aToken: "0x0a1d576f3eFeF75b330424287a95A366e8281D54",
+    baseToken: "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA",
+  },
+  {
+    aToken: "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
+    baseToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  },
+  {
+    aToken: "0x7C307e128efA31F540F2E2d976C995E0B65F51F6",
+    baseToken: "0x04C0599Ae5A44757c0af6F9eC3b93da8976c150A",
+  },
+  {
+    aToken: "0x99CBC45ea5bb7eF3a5BC08FB1B7E56bB2442Ef0D",
+    baseToken: "0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452",
+  },
 ];
 
 export const MorphoVaultTokens = [
-  { vault: "0x7bfa7c4f149e7415b73bdedfe609237e29cbf34a", output: 3 },
+  {
+    vault: "0x7bfa7c4f149e7415b73bdedfe609237e29cbf34a",
+    output: 3,
+    baseToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  },
 ];
