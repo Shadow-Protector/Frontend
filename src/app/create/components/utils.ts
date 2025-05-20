@@ -362,7 +362,11 @@ function getDepositTokenType(tokenAddress: string) {
       return vault.output;
     }
   }
-  if (AaveReserveTokens.filter((aToken) => aToken === tokenAddress)) return 1;
+  for (const aToken of AaveReserveTokens) {
+    if (aToken === tokenAddress) {
+      return 1;
+    }
+  }
   return 0;
 }
 
